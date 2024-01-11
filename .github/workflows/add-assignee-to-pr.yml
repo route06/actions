@@ -1,0 +1,13 @@
+name: Add assignee to PR
+
+on:
+  pull_request:
+    types: [opened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  add-assignee-to-pr:
+    uses: ./reusable-workflows/add-assignee-to-pr.yml

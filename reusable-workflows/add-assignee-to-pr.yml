@@ -1,0 +1,23 @@
+# @usage
+# on:
+#   pull_request:
+#     types: [opened]
+# jobs:
+#   add-assignee-to-pr:
+#     uses: route06/actions/reusable-workflows/add-assignee-to-pr.yml@main
+on:
+  workflow_call:
+
+permissions:
+  pull-requests: write
+
+jobs:
+  add-assignee-to-pr:
+    name: Add assignee to PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+
+    if: ${{ github.event.pull_request.user.type != 'Bot' && toJSON(github.event.pull_request.assignees) == '[]' }}
+
+    steps:
+      - uses: technote-space/assign-author@v1
