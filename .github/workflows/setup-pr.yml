@@ -1,8 +1,7 @@
-name: Add assignee to PR
+name: Setup PR
 
 on:
   pull_request:
-    types: [opened]
 
 permissions:
   pull-requests: write
