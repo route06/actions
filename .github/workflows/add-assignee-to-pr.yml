@@ -10,4 +10,4 @@ concurrency:
 
 jobs:
   add-assignee-to-pr:
-    uses: ./reusable-workflows/add-assignee-to-pr.yml
+    uses: ./.github/workflows/_add-assignee-to-pr.yml
