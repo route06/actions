@@ -1,0 +1,7 @@
+{
+  "language": "en",
+  "path": "docs/adr/",
+  "prefix": "",
+  "force_nfc": true,
+  "digits": 3
+}

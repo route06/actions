@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "adr:new": "adr new"
+  },
+  "devDependencies": {
+    "adr": "^1.4.5"
+  }
+}
