@@ -1,3 +1,7 @@
+# Github Discussionのコメントが投稿された際に、内容をSlackに送信します。
+# NOTE: 現在GitHubのSlack連携ではコメント通知をサポートしていません。
+# @see: [Get notifications for comment/reply of Discussions in slack (or equivalent) · community · Discussion #56821](https://github.com/orgs/community/discussions/56821)
+# 
 # @usage
 #
 # on:
