@@ -6,7 +6,7 @@
 # jobs:
 #   discussion_commented:
 #     if: github.event.discussion && github.event.comment
-#     uses: route06/actions/.github/workflows/_discussions-comment-notice.yml@v1
+#     uses: route06/actions/.github/workflows/_gh-discussion-comment-to-slack.yml@v1
 #     secrets:
 #       slack-webhook-url: ${{ secrets.SLACK_XXX_WEBHOOK_URL }}
 #
