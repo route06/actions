@@ -18,7 +18,7 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 
 * [ADR](./docs/adr)
 
-### ADRの追加方法
+#### ADRの追加方法
 
 リポジトリのルートで以下を実行します。
 
