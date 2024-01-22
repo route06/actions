@@ -1,10 +1,10 @@
 # actions
 
-ROUTE06内外から使われることを想定したGitHub Actionsです。
+ROUTE06内外から使われることを想定したGitHub ActionsのReusable Workflow集です。
 
-## 利用可能なGitHub Actions
+## 利用可能なWorkflow
 
-各actionの説明や使い方はリンク先をどうぞ。
+各workflowの説明や使い方はリンク先をどうぞ。
 
 * [_add-assignee-to-pr.yml](./.github/workflows/_add-assignee-to-pr.yml)
 * [_gh-discussion-comment-to-slack.yml](./.github/workflows/_notify-slack.yml)
