@@ -1,0 +1,73 @@
+# Github Discussionのコメントが投稿された際に、内容をSlackに送信します。
+# NOTE: 現在GitHubのSlack連携ではコメント通知をサポートしていません。
+# @see: [Get notifications for comment/reply of Discussions in slack (or equivalent) · community · Discussion #56821](https://github.com/orgs/community/discussions/56821)
+# 
+# @usage
+#
+# on:
+#   discussion_comment:
+#     types: [created]
+# jobs:
+#   discussion_commented:
+#     if: github.event.discussion && github.event.comment
+#     uses: route06/actions/.github/workflows/_gh-discussion-comment-to-slack.yml@v1
+#     secrets:
+#       slack-webhook-url: ${{ secrets.SLACK_XXX_WEBHOOK_URL }}
+#
+on:
+  workflow_call:
+    secrets:
+      slack-webhook-url:
+        required: true
+
+jobs:
+  comment-notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Note:
+      # - 一度変数に入れることで、$や`をエスケープしている
+      # - printfしないといい感じに"\n"が変換されない
+      # - ref: https://times.hrbrain.co.jp/entry/2021/11/16/github-discussions-noti
+      - run: |
+          set -o pipefail
+          body=$(
+          cat <<"EOF"
+          ${{ github.event.comment.body }}
+          EOF
+          )
+          printf -v markdown_message_escaped %b "$body"
+          jq -n \
+          --arg pretext "New discussion comment by <${{ github.event.comment.user.html_url }}|${{ github.event.comment.user.login }}>" \
+          --arg title "*<${{ github.event.comment.html_url }}|Comment on #${{ toJSON(github.event.discussion.number) }} "${{ toJSON(github.event.discussion.title) }}">*" \
+          --arg text "$markdown_message_escaped" '
+            {
+            	"attachments": [
+            		{
+            			"blocks": [
+            				{
+            					"type": "section",
+            					"text": {
+            						"type": "mrkdwn",
+            						"text": $pretext
+            					}
+            				},
+            				{
+            					"type": "section",
+            					"text": {
+            						"type": "mrkdwn",
+            						"text": $title
+            					}
+            				},
+            				{
+            					"type": "section",
+            					"text": {
+            						"type": "mrkdwn",
+            						"text": $text
+            					}
+            				}
+            			]
+            		}
+            	]
+            }
+          ' | curl -X POST ${{ secrets.slack-webhook-url }} -d @-
