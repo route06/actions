@@ -9,6 +9,7 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 * [_add-assignee-to-pr.yml](./.github/workflows/_add-assignee-to-pr.yml)
 * [_gh-discussion-comment-to-slack.yml](./.github/workflows/_notify-slack.yml)
 * [_notify-slack.yml](./.github/workflows/_notify-slack.yml)
+* [_get-last-discussion-url.yml](./.github/workflows/_get-last-discussion-url.yml)
 
 ## 開発者向け
 
