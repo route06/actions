@@ -1,0 +1,3 @@
+ls:
+  .github/workflows:
+    .yml: snake_case
