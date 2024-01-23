@@ -6,9 +6,9 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 
 各workflowの説明や使い方はリンク先をどうぞ。
 
-* [_add-assignee-to-pr.yml](./.github/workflows/_add-assignee-to-pr.yml)
-* [_gh-discussion-comment-to-slack.yml](./.github/workflows/_notify-slack.yml)
-* [_notify-slack.yml](./.github/workflows/_notify-slack.yml)
+* [add_assignee_to_pr.yml](./.github/workflows/add_assignee_to_pr.yml)
+* [gh_discussion_comment_to_slack.yml](./.github/workflows/notify_slack.yml)
+* [notify_slack.yml](./.github/workflows/notify_slack.yml)
 
 ## 開発者向け
 
