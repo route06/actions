@@ -1,3 +1,7 @@
+# PR 作成時に assignee を、PR 作成者に設定する。ただし、以下のケースを除く。
+#   * PR 作成者のユーザータイプが Bot である
+#   * すでに PR 作成時に assignee が設定されている
+#
 # @usage
 # on:
 #   pull_request:
