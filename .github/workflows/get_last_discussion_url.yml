@@ -1,10 +1,10 @@
 # 指定した "repo" で、タイトル名に "title" が含まれる最新の Discussion URL を返す。
-# 
+#
 # @usage
 #
 # jobs:
 #   get-last-discussion-url:
-#     uses: route06/actions/.github/workflows/_get-last-discussion-url.yml@v1
+#     uses: route06/actions/.github/workflows/get_last_discussion_url.yml@v2
 #     with:
 #       title: Weekly meeting
 #       repo: route06/my-repo
