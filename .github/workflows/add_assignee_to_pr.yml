@@ -4,7 +4,7 @@
 #     types: [opened]
 # jobs:
 #   add-assignee-to-pr:
-#     uses: route06/actions/.github/workflows/_add-assignee-to-pr.yml@v1
+#     uses: route06/actions/.github/workflows/add_assignee_to_pr.yml@v1
 on:
   workflow_call:
 
