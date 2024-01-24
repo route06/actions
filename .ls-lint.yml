@@ -1,0 +1,4 @@
+# @see: https://ls-lint.org/2.2/configuration/the-rules.html#overview
+ls:
+  .github/workflows:
+    .yml: snake_case
