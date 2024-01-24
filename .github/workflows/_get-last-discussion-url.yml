@@ -1,3 +1,5 @@
+# 指定した "repo" で、タイトル名に "title" が含まれる最新の Discussion URL を返す。
+# 
 # @usage
 #
 # jobs:
@@ -19,9 +21,11 @@ on:
   workflow_call:
     inputs:
       title:
+        description: 検索するdiscussionのタイトル 完全一致ではなく部分検索
         required: true
         type: string
       repo:
+        description: リポジトリ名 e.g. route06/my-repo
         required: true
         type: string
     secrets:
