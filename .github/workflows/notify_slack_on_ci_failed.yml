@@ -1,8 +1,10 @@
+# "SLACK_WEBHOOK_URL" に紐づく channel に、CI 失敗時用の Slack 通知をする。"title" を設定可能。
+#
 # @usage
 #
 # jobs:
 #   notify:
-#     uses: route06/actions/.github/workflows/notify_slack.yml@v2
+#     uses: route06/actions/.github/workflows/notify_slack_on_ci_failed.yml@v2
 #     with:
 #       title: CI failed / ci.yml
 #     secrets:
@@ -11,6 +13,7 @@ on:
   workflow_call:
     inputs:
       title:
+        description: Slackメッセージのタイトル
         required: true
         type: string
     secrets:
