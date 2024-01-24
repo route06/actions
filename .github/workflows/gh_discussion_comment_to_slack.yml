@@ -21,7 +21,7 @@ on:
         required: true
 
 jobs:
-  comment-notify:
+  gh-discussion-comment-to-slack:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
