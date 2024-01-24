@@ -4,7 +4,7 @@
 #
 # jobs:
 #   notify:
-#     uses: route06/actions/.github/workflows/notify_slack.yml@v2
+#     uses: route06/actions/.github/workflows/notify_slack_on_ci_failed.yml@v2
 #     with:
 #       title: CI failed / ci.yml
 #     secrets:
