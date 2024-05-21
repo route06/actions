@@ -29,3 +29,12 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 npm install
 npm run adr:new タイトル
 ```
+
+### リリース方法
+
+1. 前回のリリース以降に main ブランチに commit が追加されると、Release PR が作られます
+    * 例: https://github.com/route06/actions/pull/21
+1. デフォルトではパッチバージョンが 1 つ上がります
+    * メジャーバージョンを上げたい時は `tagpr:major` ラベルを、マイナーバージョンを上げたい時は `tagpr:minor` ラベルを付けて下さい
+1. マージすると [Releases](https://github.com/route06/actions/releases) に、新しいバージョンのリリースが作られます
+    * 加えて、v2 などのタグが最新の v2.Y.Z を指すように、git tag が書き換えられます

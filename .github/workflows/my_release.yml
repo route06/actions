@@ -18,6 +18,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: tagpr
+        id: run-tagpr
         uses: Songmu/tagpr@0a9b8e6634db66e773516828c1359dc6e9e8b484 # v1.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      tagpr-tag: ${{ steps.run-tagpr.outputs.tag }}
+  bump_major_tag:
+    # When (3) above, the if condition is satisfied.
+    # Major version of git tag, such as v2, is updated.
+    if: needs.tagpr.outputs.tagpr-tag != ''
+    needs: tagpr
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Get major version
+        run: echo "MAJOR_VERSION=$(echo ${{ needs.tagpr.outputs.tagpr-tag }} | cut -d '.' -f 1)" >> $GITHUB_ENV
+      - name: Tag new target
+        run: git tag -f ${{ env.MAJOR_VERSION }} ${{ needs.tagpr.outputs.tagpr-tag }}
+      - name: Push new tag
+        run: git push origin ${{ env.MAJOR_VERSION }} --force
