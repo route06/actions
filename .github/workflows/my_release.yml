@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tagpr:
+    # (1) Create a release pull request.
+    # (2) If the release pull request exists, update it.
+    # (3) If the release pull request is merged, create a new git tag and GitHub release.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: tagpr
+        uses: Songmu/tagpr@0a9b8e6634db66e773516828c1359dc6e9e8b484 # v1.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
