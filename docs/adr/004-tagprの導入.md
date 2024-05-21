@@ -20,5 +20,5 @@
 
 - tagprが自動的に作成するRelease PRをマージするだけで、[Releases](https://github.com/route06/actions/releases) へのリリースが完了する
     - デフォルトではパッチバージョンが1つ上がったリリースが作られる
-    - Release PRに `tagpr:major` ラベルを付ければメジャーバージョンが、`tagpr:minor` ラベルを付ければパッチバージョンが1つ上がる
+    - Release PRに `tagpr:major` ラベルを付ければメジャーバージョンが、`tagpr:minor` ラベルを付ければマイナーバージョンが1つ上がる
 - 初見では以上の仕組みが分からないと思うので、README.mdにリリースフローを記載する
