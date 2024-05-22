@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.0.3](https://github.com/route06/actions/compare/v2.0.2...v2.0.3) - 2024-05-22
+### Fix bug :bug:
+- Fix release workflow by @masutaka in https://github.com/route06/actions/pull/23
+
 ## [v2.0.2](https://github.com/route06/actions/compare/v2.0.1...v2.0.2) - 2024-05-21
 - Introduce tagpr for automatic release by @masutaka in https://github.com/route06/actions/pull/20
 - Release 時に v2 等の git tag が最新の v2.Y.Z を指すように書き換える by @masutaka in https://github.com/route06/actions/pull/22
