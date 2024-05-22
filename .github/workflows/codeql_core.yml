@@ -1,0 +1,41 @@
+# CodeQLを実行するワークフロー
+# .github/workflows/codeql.ymlから呼び出される
+
+on:
+  workflow_call:
+    inputs:
+      language:
+        required: true
+        type: string
+
+jobs:
+  analyze:
+    name: Perform CodeQL
+    runs-on: ${{ (inputs.language == 'swift' && 'macos-latest') || 'ubuntu-22.04'  }}
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # TODO: CodeQL が動作しないため暫定対応
+      # 理想は inputs に java-version を持たせ引数にする
+      - name: Set up JDK 17
+        if: ${{ inputs.language == 'java' }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ inputs.language }}
+
+      # コンパイルされた言語を解析するために必要
+      # コンパイルされていない言語の場合は直ちに正常終了する
+      - name: Auto build
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
