@@ -1,0 +1,154 @@
+# 変更されたファイルの拡張子をチェックし、結果に応じた言語のCodeQLワークフローを呼び出す
+
+# 作成の背景：
+# ROUTE06では元々Code Scanningのデフォルト設定を使用していたが、
+# 運用のなかで以下のような課題が見つかるようになった。
+# ・ドキュメントのみの修正にも関わらず、すべてのプログラミング言語用のジョブが動く
+# ・解析しなくてよいディレクトリ配下の指摘が多数見つかる
+# 前述の課題を解決すべくデフォルト設定を使用せず、自前でワークフローを定義している。
+
+# @usage
+# name: CodeQL
+#
+# on:
+#   push:
+#
+# permissions:
+#   actions: read
+#   checks: read
+#   contents: read
+#   security-events: write
+#
+# jobs:
+#   codeql:
+#     uses: route06/actions/.github/workflows/codeql.yml@v2
+
+# 使用上の注意：
+# マージキューを活用しているリポジトリでは、
+# ジョブの実行ブランチが下記の命名規則に沿ったブランチになることがある
+# gh-readonly-queue/{base_branch}/pr-{pr_num}-{base_branch_hash}
+# この場合、上述のブランチはリモートには存在しないためdorny/paths-filterが失敗する場合がある
+# その際は下記のようにブランチの除外条件を追加してください
+# on:
+#   push:
+#     branches-ignore:
+#       - gh-readonly-queue/main/pr-*
+
+name: Run CodeQL
+
+on:
+  workflow_call:
+
+jobs:
+  changes:
+    name: Filter Paths
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    outputs:
+      go: ${{ steps.filter.outputs.go }}
+      javascript: ${{ steps.filter.outputs.javascript }}
+      python: ${{ steps.filter.outputs.python }}
+      ruby: ${{ steps.filter.outputs.ruby }}
+      java: ${{ steps.filter.outputs.java }}
+      swift: ${{ steps.filter.outputs.swift }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # GitHub Actions組み込みのpathsによるフィルタでは、そのymlで実行する複数のjobそれぞれでpathsによる分岐ができない
+      # そのため https://github.com/dorny/paths-filter を使い、フィルタのjob → 各jobの順で実行することで複数jobの分岐を実現する
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: filter
+        with:
+          # ここで指定したkeyがoutputsに出力される
+          #
+          # 拡張子の一覧は以下を参考にしている
+          # https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/#languages-and-compilers
+          #
+          # JavascriptとTypeScriptの拡張子は意図的に同じキーにまとめている
+          # これはCodeQL内部で解析対象として、これらを同一に扱っていることに由来する
+          # https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning?learn=code_security_actions&learnProduct=code-security#changing-the-languages-that-are-analyzed
+          filters: |
+            go:
+              - '**/*.go'
+            javascript:
+              - '**/*.js'
+              - '**/*.jsx'
+              - '**/*.mjs'
+              - '**/*.es'
+              - '**/*.es6'
+              - '**/*.htm'
+              - '**/*.html'
+              - '**/*.xhtm'
+              - '**/*.xhtml'
+              - '**/*.vue'
+              - '**/*.hbs'
+              - '**/*.ejs'
+              - '**/*.njk'
+              - '**/*.json'
+              - '**/*.yaml'
+              - '**/*.yml'
+              - '**/*.raml'
+              - '**/*.xml'
+              - '**/*.ts'
+              - '**/*.tsx'
+              - '**/*.mts'
+              - '**/*.cts'
+            python:
+              - '**/*.py'
+            ruby:
+              - '**/*.rb'
+              - '**/*.erb'
+              - '**/*.gemspec'
+              - '**/Gemfile'
+            java:
+              - '**/*.kt'
+              - '**/*.kts'
+              - '**/*.ktm'
+            swift:
+              - '**/*.swift'
+              - '**/*.plist'
+              - '**/*.storyboard'
+              - '**/*.xib'
+
+  go:
+    needs: changes
+    if: ${{ needs.changes.outputs.go == 'true' }}
+    uses: ./.github/workflows/codeql_core.yml
+    with:
+      language: "go"
+
+  javascript:
+    needs: changes
+    if: ${{ needs.changes.outputs.javascript == 'true' }}
+    uses: ./.github/workflows/codeql_core.yml
+    with:
+      language: "javascript"
+
+  python:
+    needs: changes
+    if: ${{ needs.changes.outputs.python == 'true' }}
+    uses: ./.github/workflows/codeql_core.yml
+    with:
+      language: "python"
+
+  ruby:
+    needs: changes
+    if: ${{ needs.changes.outputs.ruby == 'true' }}
+    uses: ./.github/workflows/codeql_core.yml
+    with:
+      language: "ruby"
+
+  java:
+    needs: changes
+    if: ${{ needs.changes.outputs.java == 'true' }}
+    uses: ./.github/workflows/codeql_core.yml
+    with:
+      language: "java"
+
+  swift:
+    needs: changes
+    if: ${{ needs.changes.outputs.swift == 'true' }}
+    uses: ./.github/workflows/codeql_core.yml
+    with:
+      language: "swift"
