@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.0.4](https://github.com/route06/actions/compare/v2.0.3...v2.0.4) - 2024-05-24
+### Other Changes
+- Introduce CodeQL workflow by @masutaka in https://github.com/route06/actions/pull/25
+
 ## [v2.0.3](https://github.com/route06/actions/compare/v2.0.2...v2.0.3) - 2024-05-22
 ### Fix bug :bug:
 - Fix release workflow by @masutaka in https://github.com/route06/actions/pull/23
