@@ -22,7 +22,7 @@ jobs:
       # 理想は inputs に java-version を持たせ引数にする
       - name: Set up JDK 17
         if: ${{ inputs.language == 'java' }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'corretto'
