@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.1.2](https://github.com/route06/actions/compare/v2.1.1...v2.1.2) - 2024-05-28
+### Other Changes
+- Add MIT License by @masutaka in https://github.com/route06/actions/pull/29
+
 ## [v2.1.1](https://github.com/route06/actions/compare/v2.1.0...v2.1.1) - 2024-05-27
 ### Update modules :up:
 - build(deps): bump actions/setup-java from 3 to 4 by @dependabot in https://github.com/route06/actions/pull/27
