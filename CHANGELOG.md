@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.1.3](https://github.com/route06/actions/compare/v2.1.2...v2.1.3) - 2024-06-13
+### Fix bug :bug:
+- CodeQL workflow ignores deleted files by @masutaka in https://github.com/route06/actions/pull/34
+### Maintenance :technologist:
+- Avoid concurrent release workflow by @masutaka in https://github.com/route06/actions/pull/31
+- maintenance: change section and add label for release.yml by @MH4GF in https://github.com/route06/actions/pull/33
+
 ## [v2.1.2](https://github.com/route06/actions/compare/v2.1.1...v2.1.2) - 2024-05-28
 ### Other Changes
 - Add MIT License by @masutaka in https://github.com/route06/actions/pull/29
