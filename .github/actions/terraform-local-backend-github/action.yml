@@ -1,0 +1,124 @@
+name: 'Terraform `local` Backend on GitHub'
+description: 'Download or upload Terraform state file from/to GitHub repository'
+
+inputs:
+  token:
+    description: 'GitHub Token'
+    required: true
+  state_repo:
+    scription: 'Repository containing the Terraform state file'
+    quired: true
+  action:
+    scription: 'Action to perform (download or upload)'
+    quired: true
+  sha:
+    scription: 'SHA of the state file to be overwritten by upload action (required for upload)'
+    quired: false
+  state_path_remote:
+    scription: 'Path to the Terraform state file in `state_repo`'
+    quired: false
+    default: 'terraform.tfstate'
+  state_path_local:
+    scription: 'Path to the Terraform state file in GitHub Actions environment'
+    quired: false
+    default: 'terraform.tfstate'
+  commit_message:
+    description: 'Commit message for the upload action'
+    required: false
+    default: 'Update state file'
+  committer_name:
+    description: 'Committer name for the upload action'
+    required: false
+    default: 'github-actions[bot]'
+  committer_email:
+    description: 'Committer email for the upload action'
+    required: false
+    default: 'github-actions[bot]@users.noreply.github.com'
+  apply_step_continues_on_error:
+    description: 'To ensure uploading state file in case of apply error'
+    default: false
+    required: true
+    type: boolean
+
+outputs:
+  sha:
+    description: 'SHA of the state file (only for download)'
+    value: ${{ steps.handle-state-file.outputs.sha }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Check if `continue-on-error` is set to `true` in caller workflow
+      if: ${{ inputs.apply_step_continues_on_error == false }}
+      shell: bash
+      run: |
+          echo "Error: set 'continue-on-error: true' to ensure uploading state file in case of apply error." >&2
+          exit 1
+
+    - name: Extract working directory from `state_path_local`
+      id: extract_workdir
+      shell: bash
+      run: |
+          workdir=$(dirname "${{ inputs.state_path_local }}")
+          echo "workdir=$workdir" >> $GITHUB_ENV
+
+    - name: Check if Terraform env is initialized
+      shell: bash
+      run: |
+          if [ ! -d "${{ env.workdir }}/.terraform" ]; then
+          echo "Error: Terraform has not been initialized. Please run 'terraform init' at `${{ env.workdir }}` before this action."
+          exit 1
+          fi
+
+    - name: Perform action
+      id: handle-state-file
+      shell: bash
+      run: |
+          if [ "${{ inputs.action }}" = "download" ]; then
+            curl -L \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ inputs.token }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -o ${{ inputs.state_path_local }}.response \
+              -w "%{http_code}" \
+              https://api.github.com/repos/${{ inputs.state_repo }}/contents/${{ inputs.state_path_remote }} > response_code
+            HTTP_CODE=$(cat response_code)
+
+            if [ "$HTTP_CODE" -eq 200 ]; then
+              jq -r '.content' ${{ inputs.state_path_local }}.response | base64 --decode | tr -d '\n' > ${{ inputs.state_path_local }}
+              echo "sha=$(jq -r '.sha' ${{ inputs.state_path_local }}.response)" >> $GITHUB_OUTPUT
+            elif [ "$HTTP_CODE" -eq 404 ]; then
+              echo "File not found, skipping download."
+              echo "sha=initial_apply" >> $GITHUB_OUTPUT
+            else
+              echo "Error: Received HTTP code $HTTP_CODE" >&2
+              exit 1
+            fi
+
+          elif [ "${{ inputs.action }}" = "upload" ]; then
+            if [ -z "${{ inputs.sha }}" ]; then
+                echo "Error: sha input is required for upload action" >&2
+                exit 1
+            fi
+            base64 ${{ inputs.state_path_local }} | tr -d '\n' > content.b64
+            jq -n --rawfile content content.b64 \
+              --arg msg "${{ inputs.commit_message }}" \
+              --arg name "${{ inputs.committer_name }}" \
+              --arg email "${{ inputs.committer_email }}" \
+              --arg sha "${{ inputs.sha }}" \
+              '{
+                message: $msg,
+                committer: {name: $name, email: $email},
+                content: $content
+               } + (if $sha != "initial_apply" then {sha: $sha} else {} end)' > payload.json
+            curl -L \
+              -X PUT \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ inputs.token }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              https://api.github.com/repos/${{ inputs.state_repo }}/contents/${{ inputs.state_path_remote }} \
+              -d @"payload.json"
+          else
+            echo "Error: Invalid action input, must be 'download' or 'upload'" >&2
+            exit 1
+          fi
