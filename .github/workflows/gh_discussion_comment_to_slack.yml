@@ -29,17 +29,21 @@ jobs:
       # - 一度変数に入れることで、$や`をエスケープしている
       # - printfしないといい感じに"\n"が変換されない
       # - ref: https://times.hrbrain.co.jp/entry/2021/11/16/github-discussions-noti
-      - run: |
+      - name: Post to Slack
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          DISCUSSION_TITLE: ${{ toJSON(github.event.discussion.title) }}
+        run: |
           set -o pipefail
           body=$(
           cat <<"EOF"
-          ${{ github.event.comment.body }}
+          $COMMENT_BODY
           EOF
           )
           printf -v markdown_message_escaped %b "$body"
           jq -n \
           --arg pretext "New discussion comment by <${{ github.event.comment.user.html_url }}|${{ github.event.comment.user.login }}>" \
-          --arg title "*<${{ github.event.comment.html_url }}|Comment on #${{ toJSON(github.event.discussion.number) }} \"${{ toJSON(github.event.discussion.title) }}\">*" \
+          --arg title "*<${{ github.event.comment.html_url }}|Comment on #${{ toJSON(github.event.discussion.number) }} \"$DISCUSSION_TITLE\">*" \
           --arg text "$markdown_message_escaped" '
             {
             	"attachments": [
