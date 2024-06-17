@@ -2,20 +2,8 @@ name: Setup PR
 
 on:
   pull_request:
-
-permissions:
-  pull-requests: write
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    types: [opened]
 
 jobs:
   add-assignee-to-pr:
     uses: ./.github/workflows/add_assignee_to_pr.yml
-
-  ls-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ls-lint/action@v2.2.3

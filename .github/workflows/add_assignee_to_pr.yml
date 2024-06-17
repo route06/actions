@@ -12,14 +12,13 @@
 on:
   workflow_call:
 
-permissions:
-  pull-requests: write
-
 jobs:
   add-assignee-to-pr:
     name: Add assignee to PR
     runs-on: ubuntu-latest
     timeout-minutes: 1
+    permissions:
+      pull-requests: write
 
     if: ${{ github.event.pull_request.user.type != 'Bot' && toJSON(github.event.pull_request.assignees) == '[]' }}
 
