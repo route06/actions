@@ -45,7 +45,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
       - name: Get major version
-        run: echo "MAJOR_VERSION=$(echo ${{ needs.tagpr.outputs.tagpr-tag }} | cut -d '.' -f 1)" >> $GITHUB_ENV
+        run: echo "MAJOR_VERSION=$(echo ${{ needs.tagpr.outputs.tagpr-tag }} | cut -d '.' -f 1)" >> "$GITHUB_ENV"
       - name: Tag new target
         run: git tag -f ${{ env.MAJOR_VERSION }} ${{ needs.tagpr.outputs.tagpr-tag }}
       - name: Push new tag
