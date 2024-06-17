@@ -2,13 +2,7 @@ name: Setup PR
 
 on:
   pull_request:
-
-permissions:
-  pull-requests: write
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    types: [opened]
 
 jobs:
   add-assignee-to-pr:
