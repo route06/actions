@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.1.4](https://github.com/route06/actions/compare/v2.1.3...v2.1.4) - 2024-06-17
+### Maintenance :technologist:
+- Introduce actionlint workflow by @masutaka in https://github.com/route06/actions/pull/35
+- Refactor CI by @masutaka in https://github.com/route06/actions/pull/38
+
 ## [v2.1.3](https://github.com/route06/actions/compare/v2.1.2...v2.1.3) - 2024-06-13
 ### Fix bug :bug:
 - CodeQL workflow ignores deleted files by @masutaka in https://github.com/route06/actions/pull/34
