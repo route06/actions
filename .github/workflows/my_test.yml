@@ -23,3 +23,9 @@ jobs:
           filter_mode: nofilter
           level: error
           reporter: github-pr-review
+
+  ls-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ls-lint/action@v2.2.3

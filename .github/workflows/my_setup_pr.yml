@@ -13,9 +13,3 @@ concurrency:
 jobs:
   add-assignee-to-pr:
     uses: ./.github/workflows/add_assignee_to_pr.yml
-
-  ls-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ls-lint/action@v2.2.3
