@@ -37,7 +37,7 @@ jobs:
           set -o pipefail
           body=$(
           cat <<"EOF"
-          $COMMENT_BODY
+          ${{ env.COMMENT_BODY }}
           EOF
           )
           printf -v markdown_message_escaped %b "$body"
