@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.1.5](https://github.com/route06/actions/compare/v2.1.4...v2.1.5) - 2024-06-18
+### Fix bug :bug:
+- Fix gh_discussion_comment_to_slack.yml by @masutaka in https://github.com/route06/actions/pull/41
+### Other Changes
+- maintenance: Setup merge queue and remove push event by @MH4GF in https://github.com/route06/actions/pull/40
+
 ## [v2.1.4](https://github.com/route06/actions/compare/v2.1.3...v2.1.4) - 2024-06-17
 ### Maintenance :technologist:
 - Introduce actionlint workflow by @masutaka in https://github.com/route06/actions/pull/35
