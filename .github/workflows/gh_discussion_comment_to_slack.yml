@@ -32,7 +32,7 @@ jobs:
       - name: Post to Slack
         env:
           COMMENT_BODY: ${{ github.event.comment.body }}
-          DISCUSSION_TITLE: ${{ toJSON(github.event.discussion.title) }}
+          DISCUSSION_TITLE: ${{ github.event.discussion.title }}
         run: |
           set -o pipefail
           body=$(
@@ -43,7 +43,7 @@ jobs:
           printf -v markdown_message_escaped %b "$body"
           jq -n \
           --arg pretext "New discussion comment by <${{ github.event.comment.user.html_url }}|${{ github.event.comment.user.login }}>" \
-          --arg title "*<${{ github.event.comment.html_url }}|Comment on #${{ toJSON(github.event.discussion.number) }} \"$DISCUSSION_TITLE\">*" \
+          --arg title "*<${{ github.event.comment.html_url }}|Comment on #${{ toJSON(github.event.discussion.number) }} ${{ toJSON(env.DISCUSSION_TITLE) }}>*" \
           --arg text "$markdown_message_escaped" '
             {
             	"attachments": [
