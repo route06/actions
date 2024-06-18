@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.1.6](https://github.com/route06/actions/compare/v2.1.5...v2.1.6) - 2024-06-18
+### Fix bug :bug:
+- Fix gh_discussion_comment_to_slack.yml part2 by @masutaka in https://github.com/route06/actions/pull/43
+- fix missing permission for my_setup_pr.yml by @masutaka in https://github.com/route06/actions/pull/44
+
 ## [v2.1.5](https://github.com/route06/actions/compare/v2.1.4...v2.1.5) - 2024-06-18
 ### Fix bug :bug:
 - Fix gh_discussion_comment_to_slack.yml by @masutaka in https://github.com/route06/actions/pull/41
