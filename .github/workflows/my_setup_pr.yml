@@ -6,4 +6,6 @@ on:
 
 jobs:
   add-assignee-to-pr:
+    permissions:
+      pull-requests: write
     uses: ./.github/workflows/add_assignee_to_pr.yml
