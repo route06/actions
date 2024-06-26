@@ -31,7 +31,7 @@ jobs:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" | tr '\n' ' ' >> "$GITHUB_ENV"
       - name: Notify to slack
-        uses: tokorom/action-slack-incoming-webhook@main
+        uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
         env:
           INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:

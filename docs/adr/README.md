@@ -4,3 +4,4 @@
 * [2. セマンティックバージョニングの採用](002-セマンティックバージョニングの採用.md)
 * [3. ワークフローの命名規則](003-ワークフローの命名規則.md)
 * [4. tagprの導入](004-tagprの導入.md)
+* [5. サードパーティのgithub-actionsのバージョンをfull-changeset-hashで固定する](005-サードパーティのgithub-actionsのバージョンをfull-changeset-hashで固定する.md)
