@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.1.7](https://github.com/route06/actions/compare/v2.1.6...v2.1.7) - 2024-06-26
+### Maintenance :technologist:
+- build(deps): bump reviewdog/action-actionlint from 1.48.0 to 1.51.0 by @dependabot in https://github.com/route06/actions/pull/46
+### Other Changes
+- Use full changeset hash for 3rd-party GitHub Actions by @masutaka in https://github.com/route06/actions/pull/48
+
 ## [v2.1.6](https://github.com/route06/actions/compare/v2.1.5...v2.1.6) - 2024-06-18
 ### Fix bug :bug:
 - Fix gh_discussion_comment_to_slack.yml part2 by @masutaka in https://github.com/route06/actions/pull/43
