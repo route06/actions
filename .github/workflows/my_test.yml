@@ -31,4 +31,4 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - uses: ls-lint/action@v2.2.3
+      - uses: ls-lint/action@1887e6c0e7f2dfa81a2d67591f0eb7782720026f # v2.2.3
