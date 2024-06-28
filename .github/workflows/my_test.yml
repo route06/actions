@@ -17,14 +17,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/create-github-app-token@ad38cffc07bac6e3857755914c4c88bfd2db4da4 # v1.10.2
-        id: app-token
-        with:
-          app-id: ${{ vars.ACTIONS_CI_APP_ID }}
-          private-key: ${{ secrets.ACTIONS_CI_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v4
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - name: Run actionlint with reviewdog
         uses: reviewdog/action-actionlint@afad3b6ab835e5611bda8c8193377e2d5c21413d # v1.51.0
         with:
