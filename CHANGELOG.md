@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.1.8](https://github.com/route06/actions/compare/v2.1.7...v2.1.8) - 2024-07-01
+### Maintenance :technologist:
+- build(deps-dev): bump adr from 1.4.5 to 1.4.6 by @dependabot in https://github.com/route06/actions/pull/50
+- maintenance: use github app token by @MH4GF in https://github.com/route06/actions/pull/49
+
 ## [v2.1.7](https://github.com/route06/actions/compare/v2.1.6...v2.1.7) - 2024-06-26
 ### Maintenance :technologist:
 - build(deps): bump reviewdog/action-actionlint from 1.48.0 to 1.51.0 by @dependabot in https://github.com/route06/actions/pull/46
