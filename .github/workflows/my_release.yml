@@ -15,16 +15,20 @@ jobs:
     # (3) If the release pull request is merged, create a new git tag and GitHub release.
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
+      - uses: actions/create-github-app-token@ad38cffc07bac6e3857755914c4c88bfd2db4da4 # v1.10.2
+        id: app-token
+        with:
+          app-id: ${{ vars.ACTIONS_CI_APP_ID }}
+          private-key: ${{ secrets.ACTIONS_CI_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
       - name: tagpr
         id: run-tagpr
         uses: Songmu/tagpr@0a9b8e6634db66e773516828c1359dc6e9e8b484 # v1.3.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
     outputs:
       tagpr-tag: ${{ steps.run-tagpr.outputs.tag }}
   bump_major_tag:
