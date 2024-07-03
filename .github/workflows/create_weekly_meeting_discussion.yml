@@ -40,7 +40,7 @@ jobs:
         id: get_date
         run: |
           target_day=$(date -d "next $TARGET_DAY" +%Y%m%d)
-          echo "target_day=$target_day" >> $GITHUB_OUTPUT
+          echo "target_day=$target_day" >> "$GITHUB_OUTPUT"
 
       - name: Run script
         env:
