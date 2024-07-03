@@ -1,0 +1,52 @@
+name: Create weekly meeting discussion
+
+on:
+  workflow_dispatch:
+#  # NOTE:
+#  # Discussion作成タイミングのスケジュールを有効にする場合、
+#  # 5行目から15行目の文頭の「#」を削除してコメントアウトを外してください
+#  schedule:
+#    # 毎週月曜 09:00 JST
+#    - cron: "0 0 * * mon"
+#    # その他のスケジュール例
+#    # 毎週水曜 9:00 JST -> "0 0 * * wed"
+#    # 毎週金曜 13:00 JST -> "0 4 * * fri"
+#    # 毎週金曜 23:30 JST -> "30 14 * * fri"
+#    # 毎週月曜 5:00 JST -> "0 20 * * sun"
+
+env:
+  # NOTE: MTG開催曜日に合わせて変更してください
+  TARGET_DAY: "sunday"
+  # NOTE: 基本的にroute06のままで問題ありません
+  OWNER: "route06"
+  # NOTE: リポジトリ名に合わせて変更してください
+  REPOSITORY_NAME: "professional-service-div-template"
+  # NOTE: タイトルをお好みで変更してください（yyyymmdd_が接頭辞として付与されます）
+  TITLE: "ハドル"
+  # NOTE: ディスカッションのカテゴリslugを変更してください（そのままで良いケースが多そうです）
+  DISCUSSION_CATEGORY_SLUG: "meeting-notes"
+
+jobs:
+  create_weekly_meeting_discussion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: "Asia/Tokyo"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get next meeting date
+        id: get_date
+        run: |
+          target_day=$(date -d "next $TARGET_DAY" +%Y%m%d)
+          echo "target_day=$target_day" >> $GITHUB_OUTPUT
+
+      - name: Run script
+        env:
+          TARGET_DATE: ${{ steps.get_date.outputs.target_day }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const script = require('./.github/workflows/scripts/createWeeklyMeetingDiscussion.cjs')
+            await script({ github })
