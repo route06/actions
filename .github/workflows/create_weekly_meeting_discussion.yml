@@ -36,7 +36,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get next meeting date
+      - name: "Get next meeting date"
         id: get_date
         run: |
           target_day=$(date -d "next $TARGET_DAY" +%Y%m%d)
