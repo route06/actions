@@ -56,7 +56,7 @@ module.exports = async ({ github }) => {
     DISCUSSION_CATEGORY_SLUG,
   )
 
-  const title = `${TARGET_DATE}_${TITLE}`;
+  const title = `${TARGET_DATE} ${TITLE}`;
   const description = fs.readFileSync(DESCRIPTION_TEMPLATE_PATH, "utf8");
 
   const discussionId = await createWeeklyReportDiscussion(

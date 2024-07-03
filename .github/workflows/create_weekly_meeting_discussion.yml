@@ -21,7 +21,7 @@ env:
   OWNER: "route06"
   # NOTE: リポジトリ名に合わせて変更してください
   REPOSITORY_NAME: "professional-service-div-template"
-  # NOTE: タイトルをお好みで変更してください（yyyymmdd_が接頭辞として付与されます）
+  # NOTE: タイトルをお好みで変更してください（yyyy/mm/dd が接頭辞として付与されます）
   TITLE: "ハドル"
   # NOTE: ディスカッションのカテゴリslugを変更してください（そのままで良いケースが多そうです）
   DISCUSSION_CATEGORY_SLUG: "meeting-notes"
@@ -39,12 +39,12 @@ jobs:
       - name: "Get next meeting date"
         id: get_date
         run: |
-          target_day=$(date -d "next $TARGET_DAY" +%Y%m%d)
-          echo "target_day=$target_day" >> "$GITHUB_OUTPUT"
+          target_date=$(date -d "next $TARGET_DAY" +%Y/%m/%d)
+          echo "target_date=$target_date" >> "$GITHUB_OUTPUT"
 
       - name: Run script
         env:
-          TARGET_DATE: ${{ steps.get_date.outputs.target_day }}
+          TARGET_DATE: ${{ steps.get_date.outputs.target_date }}
         uses: actions/github-script@v6
         with:
           script: |
