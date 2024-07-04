@@ -36,7 +36,7 @@ on:
       default: meeting-notes
       type: string
     description_template_path:
-      description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください
+      description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください。
       required: true
       type: string
 
