@@ -8,8 +8,6 @@
 #     uses: route06/actions/.github/workflows/create_discussion.yml@v2
 #     with:
 #         target_day: sunday
-#         owner: route06
-#         repository_name: professional-service-div-template
 #         title: ハドル
 #         discussion_category_slug: meeting-notes
 #         description_template_path: _templates/weekly_meeting_discussion/test.md
@@ -22,10 +20,6 @@ on:
     target_day:
       description: MTG開催曜日に合わせて変更してください。
       required: true
-      type: string
-    repository:
-      description: Discussionを作成するリポジトリ情報です。実行リポジトリの情報をデフォルトで設定します。
-      default: ${{ github.repository }}
       type: string
     title:
       description: 作成するDiscussionのタイトルを設定してください（yyyy/mm/dd が接頭辞として自動付与されます）。
@@ -59,7 +53,7 @@ jobs:
       - name: Run script
         env:
           TARGET_DATE: ${{ steps.get_date.outputs.target_date }}
-          REPOSITORY: ${{ inputs.repository }}
+          REPOSITORY: ${{ github.repository }}
           DISCUSSION_CATEGORY_SLUG: ${{ inputs.discussion_category_slug }} 
           TITLE: ${{ inputs.title }}
           DESCRIPTION_TEMPLATE_PATH: ${{ inputs.description_template_path }}
