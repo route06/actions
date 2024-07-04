@@ -20,21 +20,25 @@ on:
   workflow_call:
    inputs: 
     target_day:
+      description: MTG開催曜日に合わせて変更してください。
       required: true
       type: string
-    owner:
-      required: true
-      type: string
-    repository_name:
+    repository:
+      description: Discussionを作成するリポジトリ情報です。実行リポジトリの情報をデフォルトで設定します。
+      default: ${{ github.repository }}
       required: true
       type: string
     title:
+      description: 作成するDiscussionのタイトルを設定してください（yyyy/mm/dd が接頭辞として自動付与されます）。
       required: true
       type: string
     discussion_category_slug:
+      description: 作成するDiscussionのカテゴリslugを設定してください。
+      default: meeting-notes
       required: true
       type: string
     description_template_path:
+      description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください
       required: true
       type: string
 
@@ -57,8 +61,7 @@ jobs:
       - name: Run script
         env:
           TARGET_DATE: ${{ steps.get_date.outputs.target_date }}
-          OWNER: ${{ inputs.owner }}
-          REPOSITORY_NAME: ${{ inputs.repository_name }}
+          REPOSITORY: ${{ inputs.repository }}
           DISCUSSION_CATEGORY_SLUG: ${{ inputs.discussion_category_slug }} 
           TITLE: ${{ inputs.title }}
           DESCRIPTION_TEMPLATE_PATH: ${{ inputs.description_template_path }}
@@ -105,12 +108,13 @@ jobs:
               });
             }
 
-            const { OWNER, REPOSITORY_NAME, DISCUSSION_CATEGORY_SLUG, TARGET_DATE, TITLE, DESCRIPTION_TEMPLATE_PATH } = process.env;
+            const { REPOSITORY, DISCUSSION_CATEGORY_SLUG, TARGET_DATE, TITLE, DESCRIPTION_TEMPLATE_PATH } = process.env;
+            const [owner, repositoryName] = REPOSITORY.split('/');
 
             const repositoryIdAndCategoryId = await featchRepoIdAndDiscussionCategoryId(
               github,
-              OWNER,
-              REPOSITORY_NAME,
+              owner,
+              repositoryName,
               DISCUSSION_CATEGORY_SLUG,
             )
 
