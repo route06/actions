@@ -26,7 +26,6 @@ on:
     repository:
       description: Discussionを作成するリポジトリ情報です。実行リポジトリの情報をデフォルトで設定します。
       default: ${{ github.repository }}
-      required: true
       type: string
     title:
       description: 作成するDiscussionのタイトルを設定してください（yyyy/mm/dd が接頭辞として自動付与されます）。
@@ -35,7 +34,6 @@ on:
     discussion_category_slug:
       description: 作成するDiscussionのカテゴリslugを設定してください。
       default: meeting-notes
-      required: true
       type: string
     description_template_path:
       description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください
