@@ -11,6 +11,13 @@
 #       title: ハドル
 #       discussion_category_slug: meeting-notes
 #       description_template_path: _templates/weekly_meeting_discussion/test.md
+#
+# 補足:
+# discussion_category_slug は各カテゴリを選択した時の、URL 末尾の文字列です。以下は例です。
+# カテゴリ `Q&A` の slug は `q-a`:
+#   https://github.com/<org>/<repo>/discussions/categories/q-a
+# カテゴリ `Show and tell` の slug は `show-and-tell`:
+#   https://github.com/<org>/<repo>/discussions/categories/show-and-tel
 
 name: Create discussion
 
@@ -27,7 +34,7 @@ on:
       type: string
     discussion_category_slug:
       description: 作成するDiscussionのカテゴリslugを設定してください。
-      default: meeting-notes
+      default: general
       type: string
     description_template_path:
       description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください。
