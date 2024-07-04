@@ -7,10 +7,10 @@
 #   create_discussion:
 #     uses: route06/actions/.github/workflows/create_discussion.yml@v2
 #     with:
-#         target_day: sunday
-#         title: ハドル
-#         discussion_category_slug: meeting-notes
-#         description_template_path: _templates/weekly_meeting_discussion/test.md
+#       target_day: sunday
+#       title: ハドル
+#       discussion_category_slug: meeting-notes
+#       description_template_path: _templates/weekly_meeting_discussion/test.md
 
 name: Create discussion
 
