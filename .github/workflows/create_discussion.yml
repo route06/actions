@@ -5,7 +5,7 @@
 #     - cron: "0 0 * * mon"
 # jobs:
 #   create_discussion:
-#     uses: route06/actions/.github/workflows/create_github_discussion.yml@v2
+#     uses: route06/actions/.github/workflows/create_discussion.yml@v2
 #     with:
 #         target_day: sunday
 #         owner: route06

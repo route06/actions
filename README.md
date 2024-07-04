@@ -13,7 +13,7 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 * [get_last_discussion_url.yml](./.github/workflows/get_last_discussion_url.yml)
 * [gh_discussion_comment_to_slack.yml](./.github/workflows/gh_discussion_comment_to_slack.yml)
 * [notify_slack_on_ci_failed.yml](./.github/workflows/notify_slack_on_ci_failed.yml)
-* [定例用Discussion自動作成](./docs/how_to_use/定例用Discussion自動作成/README.md)
+* [create_discussion.yml](./.github/workflows/create_discussion.yml)
 
 ## 開発者向け
 
