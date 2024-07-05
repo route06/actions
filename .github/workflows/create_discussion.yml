@@ -17,7 +17,7 @@
 # カテゴリ `Q&A` の slug は `q-a`:
 #   https://github.com/<org>/<repo>/discussions/categories/q-a
 # カテゴリ `Show and tell` の slug は `show-and-tell`:
-#   https://github.com/<org>/<repo>/discussions/categories/show-and-tel
+#   https://github.com/<org>/<repo>/discussions/categories/show-and-tell
 
 name: Create discussion
 
