@@ -118,7 +118,18 @@ jobs:
             )
 
             const discussionTitle = `${TARGET_DATE} ${TITLE}`;
-            const description = fs.readFileSync(DESCRIPTION_TEMPLATE_PATH, "utf8");
+
+            let description;
+            try {
+              description = fs.readFileSync(DESCRIPTION_TEMPLATE_PATH, "utf8");
+              if (!description) {
+                console.warn('Description file is empty, using default description.');
+                description = 'Default description text';
+              }
+            } catch (error) {
+              console.error("Error reading description template file:", error);
+              process.exit(1);
+            }
 
             const discussionId = await createWeeklyReportDiscussion(
               github,
