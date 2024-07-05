@@ -2,15 +2,32 @@
 #
 # on:
 #   schedule:
-#     - cron: "0 0 * * mon"
+#     # 毎週水曜 13:00 JST
+#     - cron: "0 4 * * wed"
+#
+# env:
+#   # NOTE: MTG開催曜日に合わせて変更してください
+#   TARGET_DAY: "wednesday"
+#
 # jobs:
 #   create_discussion:
-#     uses: route06/actions/.github/workflows/create_discussion.yml@v2
-#     with:
-#       target_day: sunday
-#       title: ハドル
-#       discussion_category_slug: meeting-notes
-#       description_template_path: _templates/weekly_meeting_discussion/test.md
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     env:
+#       TZ: "Asia/Tokyo"
+#     steps:
+#       - name: Get next meeting date
+#         id: get_date
+#         run: |
+#           target_date=$(date -d "next $TARGET_DAY" +%Y/%m/%d)
+#           echo "target_date=$target_date" >> "$GITHUB_OUTPUT"
+#
+#       - name: Run create discussion workflow
+#         uses: route06/actions/.github/workflows/create_discussion.yml@v2
+#         with:
+#           title: ${{ steps.get_date.outputs.target_date }} Meeting Title
+#           discussion_category_slug: meeting-notes
+#           description_template_path: _templates/weekly_meeting_discussion/test.md
 #
 # 補足:
 # discussion_category_slug は各カテゴリを選択した時の、URL 末尾の文字列です。以下は例です。
@@ -24,12 +41,8 @@ name: Create discussion
 on:
   workflow_call:
    inputs: 
-    target_day:
-      description: MTG開催曜日に合わせて変更してください。
-      required: true
-      type: string
     title:
-      description: 作成するDiscussionのタイトルを設定してください（yyyy/mm/dd が接頭辞として自動付与されます）。
+      description: 作成するDiscussionのタイトルを設定してください。
       required: true
       type: string
     discussion_category_slug:
@@ -51,15 +64,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: "Get next meeting date"
-        id: get_date
-        run: |
-          target_date=$(date -d "next ${{ inputs.target_day }}" +%Y/%m/%d)
-          echo "target_date=$target_date" >> "$GITHUB_OUTPUT"
-
       - name: Run script
         env:
-          TARGET_DATE: ${{ steps.get_date.outputs.target_date }}
           REPOSITORY: ${{ github.repository }}
           DISCUSSION_CATEGORY_SLUG: ${{ inputs.discussion_category_slug }} 
           TITLE: ${{ inputs.title }}
@@ -92,7 +98,7 @@ jobs:
               return {repositoryId: result.repository.id, categoryId: result.repository.discussionCategory.id};
             }
 
-            async function createWeeklyReportDiscussion(github, repositoryId, categoryId, title, description) {
+            async function createMyDiscussion(github, repositoryId, categoryId, title, description) {
               const result = await github.graphql(`mutation($repositoryId:ID!, $categoryId:ID!, $title:String!, $body:String!) {
                 createDiscussion(input: {repositoryId: $repositoryId, categoryId: $categoryId, title: $title, body: $body}) {
                   discussion {
@@ -107,7 +113,7 @@ jobs:
               });
             }
 
-            const { REPOSITORY, DISCUSSION_CATEGORY_SLUG, TARGET_DATE, TITLE, DESCRIPTION_TEMPLATE_PATH } = process.env;
+            const { REPOSITORY, DISCUSSION_CATEGORY_SLUG, TITLE, DESCRIPTION_TEMPLATE_PATH } = process.env;
             const [owner, repositoryName] = REPOSITORY.split('/');
 
             const repositoryIdAndCategoryId = await featchRepoIdAndDiscussionCategoryId(
@@ -117,7 +123,7 @@ jobs:
               DISCUSSION_CATEGORY_SLUG,
             )
 
-            const discussionTitle = `${TARGET_DATE} ${TITLE}`;
+            const discussionTitle = TITLE;
 
             let description;
             try {
@@ -131,7 +137,7 @@ jobs:
               process.exit(1);
             }
 
-            const discussionId = await createWeeklyReportDiscussion(
+            const discussionId = await createMyDiscussion(
               github,
               repositoryIdAndCategoryId.repositoryId,
               repositoryIdAndCategoryId.categoryId,
