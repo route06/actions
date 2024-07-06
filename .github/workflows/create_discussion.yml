@@ -1,8 +1,11 @@
+# todo: 以下はStarter Workflow化する
 # @usage
+#
+# name: Create discussion
 #
 # on:
 #   schedule:
-#     # 毎週水曜 13:00 JST
+#     # 毎週水曜 13:00 JST に実行
 #     - cron: "0 4 * * wed"
 #
 # env:
@@ -10,7 +13,7 @@
 #   TARGET_DAY: "wednesday"
 #
 # jobs:
-#   create_discussion:
+#   get_next_meeting_date:
 #     runs-on: ubuntu-latest
 #     timeout-minutes: 10
 #     env:
@@ -21,13 +24,19 @@
 #         run: |
 #           target_date=$(date -d "next $TARGET_DAY" +%Y/%m/%d)
 #           echo "target_date=$target_date" >> "$GITHUB_OUTPUT"
-#
-#       - name: Run create discussion workflow
-#         uses: route06/actions/.github/workflows/create_discussion.yml@v2
-#         with:
-#           title: ${{ steps.get_date.outputs.target_date }} Meeting Title
-#           discussion_category_slug: meeting-notes
-#           description_template_path: _templates/weekly_meeting_discussion/test.md
+#     outputs:
+#       target_date: ${{ steps.get_date.outputs.target_date }}
+# 
+#   create_discussion:
+#     needs: get_next_meeting_date
+#     uses: route06/actions/.github/workflows/create_discussion.yml@update-create-discussion-workflow-1
+#     with:
+#       # NOTE: 作成するDiscussionのタイトルを指定
+#       title: ${{ needs.get_next_meeting_date.outputs.target_date }} Meeting Title
+#       # NOTE: discussion_category_slugについては補足参照
+#       discussion_category_slug: meeting-notes
+#       # NOTE: 作成するDiscussionで使用するテンプレートファイルのパスを指定
+#       description_template_path: _templates/weekly_meeting_discussion/test.md
 #
 # 補足:
 # discussion_category_slug は各カテゴリを選択した時の、URL 末尾の文字列です。以下は例です。
