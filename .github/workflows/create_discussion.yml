@@ -134,17 +134,21 @@ jobs:
 
             const discussionTitle = TITLE;
 
-            let description;
-            try {
-              description = fs.readFileSync(DESCRIPTION_TEMPLATE_PATH, "utf8");
-              if (!description) {
-                console.warn('Description file is empty, using default description.');
-                description = 'Default description text';
+            const description = (() => {
+              const DEFAULT_DESCRIPTION = '<!-- Write description here -->';
+              try {
+                const desc = fs.readFileSync(DESCRIPTION_TEMPLATE_PATH, "utf8");
+                return desc.trim() === '' ? DEFAULT_DESCRIPTION : desc;
+              } catch (error) {
+                if (error.code === 'ENOENT') {
+                  console.error("Error reading description template file:", error);
+                  return DEFAULT_DESCRIPTION;
+                }
+                else {
+                  throw error;
+                }
               }
-            } catch (error) {
-              console.error("Error reading description template file:", error);
-              process.exit(1);
-            }
+            })();
 
             const discussionId = await createMyDiscussion(
               github,
