@@ -29,7 +29,7 @@
 # 
 #   create_discussion:
 #     needs: get_next_meeting_date
-#     uses: route06/actions/.github/workflows/create_gh_discussion.yml@update-create-discussion-workflow-1
+#     uses: route06/actions/.github/workflows/create_gh_discussion.yml@v2
 #     with:
 #       # NOTE: 作成するDiscussionのタイトルを指定
 #       title: ${{ needs.get_next_meeting_date.outputs.target_date }} Meeting Title
