@@ -1,0 +1,92 @@
+# @usage
+#
+# name: Get next scheduled date
+#
+# on:
+#   workflow_dispatch:
+#
+# jobs:
+#   get_next_weekly_scheduled_date:
+#     uses: route06/actions/.github/workflows/get_next_scheduled_date.yml@test-calculate-next-date
+#     with:
+#       target_schedule: weekly
+#       target_day: wednesday
+#
+# log_result:
+#     runs-on: ubuntu-latest
+#     needs: [get_next_weekly_scheduled_date]
+#     steps:
+#       - name: Log the next scheduled date
+#         run: |
+#           echo "The next weekly schedule date is: ${{ needs.get_next_weekly_scheduled_date.outputs.next_scheduled_date }}"
+
+name: Get next scheduled date
+
+on:
+  workflow_call:
+    inputs: 
+      target_schedule:
+        description: daily, weekly, monthly, yearlyのいずれかを指定してください。
+        default: weekly
+        type: string
+      target_day:
+        description: 週次の場合の対象曜日を指定してください。
+        default: monday
+        type: string
+      target_date:
+        description: 月次の場合の対象日を指定してください。
+        default: "1"
+        type: string
+      target_yearly_date:
+        description: 年次の場合の対象月日を指定してください。
+        default: 01-01
+        type: string
+      time_zone:
+        description: タイムゾーンを指定してください。
+        default: "Asia/Tokyo"
+        type: string
+    outputs:
+      next_scheduled_date:
+        description: yyyy/mm/dd形式で日付を返します。
+        value: ${{ jobs.get_next_scheduled_date.outputs.next_scheduled_date }}
+
+jobs:
+  get_next_scheduled_date:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: ${{ inputs.time_zone }}
+    steps:
+      - name: Run script
+        id: get_date
+        run: |
+            if [ "${{ inputs.target_schedule }}" = "daily" ]; then
+                next_scheduled_date=$(date -d "tomorrow" +%Y/%m/%d)
+            elif [ "${{ inputs.target_schedule }}" = "weekly" ]; then
+                next_scheduled_date=$(date -d "next ${{ inputs.target_day }}" +%Y/%m/%d)
+            elif [ "${{ inputs.target_schedule }}" = "monthly" ]; then
+                today=$(date +%d)
+                if [ "$today" -lt "${{ inputs.target_date }}" ]; then
+                  next_scheduled_date=$(date -d "$(date +%Y-%m-)${{ inputs.target_date }}" +%Y/%m/%d)
+                else
+                  next_scheduled_date=$(date -d "$(date +%Y-%m-01) +1 month +$((${{ inputs.target_date }}-1)) days" +%Y/%m/%d)
+                fi
+            elif [ "${{ inputs.target_schedule }}" = "yearly" ]; then
+                current_year=$(date +%Y)
+                current_month_day=$(date +%m-%d)
+                if [ "$current_month_day" = "${{ inputs.target_yearly_date }}" ]; then
+                  next_scheduled_date=$(date -d "$current_year-${{ inputs.target_yearly_date }} +1 year" +%Y/%m/%d)
+                else
+                  if [ "$current_month_day" -lt "${{ inputs.target_yearly_date }}" ]; then
+                      next_scheduled_date=$(date -d "$current_year-${{ inputs.target_yearly_date }}" +%Y/%m/%d)
+                  else
+                      next_scheduled_date=$(date -d "$((current_year + 1))-${{inputs.target_yearly_date }}" +%Y/%m/%d)
+                  fi
+                fi
+            else
+                echo "Invalid TARGET_SCHEDULE value"
+                exit 1
+            fi
+            echo "next_scheduled_date=$next_scheduled_date" >> "$GITHUB_OUTPUT"
+    outputs:
+        next_scheduled_date: ${{ steps.get_date.outputs.next_scheduled_date }}
