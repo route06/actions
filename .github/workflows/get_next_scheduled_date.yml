@@ -66,7 +66,7 @@ jobs:
                 next_scheduled_date=$(date -d "next ${{ inputs.target_day }}" +%Y/%m/%d)
             elif [ "${{ inputs.target_schedule }}" = "monthly" ]; then
                 today=$(date +%d)
-                if [ "$today" -lt "${{ inputs.target_date }}" ]; then
+                if [ "$today" \< "${{ inputs.target_date }}" ]; then
                   next_scheduled_date=$(date -d "$(date +%Y-%m-)${{ inputs.target_date }}" +%Y/%m/%d)
                 else
                   next_scheduled_date=$(date -d "$(date +%Y-%m-01) +1 month +$((${{ inputs.target_date }}-1)) days" +%Y/%m/%d)
@@ -77,7 +77,7 @@ jobs:
                 if [ "$current_month_day" = "${{ inputs.target_yearly_date }}" ]; then
                   next_scheduled_date=$(date -d "$current_year-${{ inputs.target_yearly_date }} +1 year" +%Y/%m/%d)
                 else
-                  if [ "$current_month_day" -lt "${{ inputs.target_yearly_date }}" ]; then
+                  if [ "$current_month_day" \< "${{ inputs.target_yearly_date }}" ]; then
                       next_scheduled_date=$(date -d "$current_year-${{ inputs.target_yearly_date }}" +%Y/%m/%d)
                   else
                       next_scheduled_date=$(date -d "$((current_year + 1))-${{inputs.target_yearly_date }}" +%Y/%m/%d)
