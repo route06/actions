@@ -26,20 +26,12 @@ on:
   workflow_call:
     inputs: 
       interval:
-        description: daily, weekly, monthly, yearlyのいずれかを指定してください。
+        description: daily, weeklyのいずれかを指定してください。
         default: weekly
         type: string
       target_day:
         description: 週次の場合の対象曜日を指定してください。
         default: monday
-        type: string
-      target_date:
-        description: 月次の場合の対象日を指定してください。
-        default: "1"
-        type: string
-      target_yearly_date:
-        description: 年次の場合の対象月日を指定してください。
-        default: 01-01
         type: string
       time_zone:
         description: タイムゾーンを指定してください。
@@ -60,33 +52,18 @@ jobs:
       - name: Run script
         id: get_date
         run: |
-            if [ "${{ inputs.interval }}" = "daily" ]; then
+          case "${{ inputs.interval }}" in
+            "daily")
                 next_scheduled_date=$(date -d "tomorrow" +%Y/%m/%d)
-            elif [ "${{ inputs.interval }}" = "weekly" ]; then
+                ;;
+            "weekly")
                 next_scheduled_date=$(date -d "next ${{ inputs.target_day }}" +%Y/%m/%d)
-            elif [ "${{ inputs.interval }}" = "monthly" ]; then
-                today=$(date +%d)
-                if [ "$today" \< "${{ inputs.target_date }}" ]; then
-                  next_scheduled_date=$(date -d "$(date +%Y-%m-)${{ inputs.target_date }}" +%Y/%m/%d)
-                else
-                  next_scheduled_date=$(date -d "$(date +%Y-%m-01) +1 month +$((${{ inputs.target_date }}-1)) days" +%Y/%m/%d)
-                fi
-            elif [ "${{ inputs.interval }}" = "yearly" ]; then
-                current_year=$(date +%Y)
-                current_month_day=$(date +%m-%d)
-                if [ "$current_month_day" = "${{ inputs.target_yearly_date }}" ]; then
-                  next_scheduled_date=$(date -d "$current_year-${{ inputs.target_yearly_date }} +1 year" +%Y/%m/%d)
-                else
-                  if [ "$current_month_day" \< "${{ inputs.target_yearly_date }}" ]; then
-                      next_scheduled_date=$(date -d "$current_year-${{ inputs.target_yearly_date }}" +%Y/%m/%d)
-                  else
-                      next_scheduled_date=$(date -d "$((current_year + 1))-${{inputs.target_yearly_date }}" +%Y/%m/%d)
-                  fi
-                fi
-            else
+                ;;
+            *)
                 echo "Invalid INTERVAL value"
                 exit 1
-            fi
+                ;;
+            esac
             echo "next_scheduled_date=$next_scheduled_date" >> "$GITHUB_OUTPUT"
     outputs:
-        next_scheduled_date: ${{ steps.get_date.outputs.next_scheduled_date }}
+      next_scheduled_date: ${{ steps.get_date.outputs.next_scheduled_date }}
