@@ -7,7 +7,7 @@
 #
 # jobs:
 #   get_next_weekly_scheduled_date:
-#     uses: route06/actions/.github/workflows/get_next_scheduled_date.yml@test-calculate-next-date
+#     uses: route06/actions/.github/workflows/get_next_scheduled_date.yml@v2
 #     with:
 #       target_schedule: weekly
 #       target_day: wednesday
