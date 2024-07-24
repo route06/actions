@@ -27,8 +27,8 @@ on:
     inputs: 
       interval:
         description: daily, weeklyのいずれかを指定してください。
-        default: weekly
         type: string
+        required: true
       target_day:
         description: 週次の場合の対象曜日を指定してください。
         default: monday
