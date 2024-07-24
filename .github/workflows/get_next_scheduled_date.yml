@@ -30,7 +30,7 @@ on:
         type: string
         required: true
       target_day:
-        description: 週次の場合の対象曜日を指定してください。
+        description: intervalがweeklyの時は必須です。対象曜日を指定してください。
         default: monday
         type: string
       time_zone:
