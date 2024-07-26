@@ -1,0 +1,92 @@
+# @usage
+#
+# on:
+#     workflow_dispatch:
+#
+# jobs:
+#   add_discussion_comment:
+#     uses: route06/actions/.github/workflows/add_discussion_comment.yml@v2
+#     with:
+#       discussion_id: {discussion_id}
+#       comment_seed_path: _templates/weekly_meeting_discussion/seed.jsonl
+#
+# 補足:
+# comment_seed_pathに指定するファイルフォーマットは以下の通り
+# {"template_file_path": "xxx/yyy/zzz.md", "replace_values": {"title": "たいとる", "assign": "たなか", "foo": "こめんと"}}
+# template_file_pathにはコメントのもとになるテンプレートファイルを指定
+# replace_valuesはテンプレートファイルの中身に記述された{{ title }}などの変数を置換するためのオブジェクトを指定
+
+name: Create discussion
+
+on:
+  workflow_call:
+   inputs: 
+    discussion_id:
+      description: コメントを追加するDiscussion IDを指定してください。
+      required: true
+      type: string
+    comment_seed_path:
+      description: コメントを生成するためのシードデータファイルを指定してください。
+      required: true
+      type: string
+
+jobs:
+  add_discussion_comment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: "Asia/Tokyo"
+    permissions:
+      contents: read
+      discussions: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run script
+        env:
+         DISCUSSION_ID: ${{ inputs.discussion_id }}
+         COMMENT_SEED_PATH: ${{ inputs.comment_seed_path }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+
+            async function createDisussionComment(github, discussionId, body) {
+              const result = await github.graphql(`mutation($body:String!, $discussion_id:ID!) {
+                addDiscussionComment(input: {discussionId: $discussion_id, body: $body}) {
+                  comment {
+                    id
+                  }
+                }
+              }`, {
+                body,
+                discussion_id: discussionId,
+              });
+
+              return result.addDiscussionComment.comment.id;
+            }
+
+            const { DISCUSSION_ID, COMMENT_SEED_PATH } = process.env;
+
+            const commentSeeds = fs.readFileSync(COMMENT_SEED_PATH, "utf8")
+              .trim()
+              .split("\n")
+              .map(JSON.parse);
+
+            for await (const seed of commentSeeds) {
+              // seedのイメージ
+              // {"template_file_path": "xxx/yyy/zzz.md", "replace_values": {"title": "たいとる", "assign": "たなか", "foo": "こめんと"}}
+              // seedファイルに指定されているファイルをテンプレートとしてコメントを作成
+              const template = fs.readFileSync(seed['template_file_path'], "utf8")
+              let body = template;
+
+              const replaceValues = seed['replace_values'];
+
+              Object.entries(replaceValues).forEach(([key, value], index) => {
+                const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+                body = body.replace(regex, value);
+              });
+
+              await createDisussionComment(github, DISCUSSION_ID, body);
+            }
