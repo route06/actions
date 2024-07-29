@@ -1,0 +1,69 @@
+# @usage
+#
+# name: Get next scheduled date
+#
+# on:
+#   workflow_dispatch:
+#
+# jobs:
+#   get_next_weekly_scheduled_date:
+#     uses: route06/actions/.github/workflows/get_next_scheduled_date.yml@v2
+#     with:
+#       interval: weekly
+#       target_day: wednesday
+#
+#   log_result:
+#     runs-on: ubuntu-latest
+#     needs: [get_next_weekly_scheduled_date]
+#     steps:
+#       - name: Log the next scheduled date
+#         run: |
+#           echo "The next weekly schedule date is: ${{ needs.get_next_weekly_scheduled_date.outputs.next_scheduled_date }}"
+
+name: Get next scheduled date
+
+on:
+  workflow_call:
+    inputs: 
+      interval:
+        description: daily, weeklyのいずれかを指定してください。
+        type: string
+        required: true
+      target_day:
+        description: intervalがweeklyの時は必須です。対象曜日を指定してください。
+        default: monday
+        type: string
+      time_zone:
+        description: タイムゾーンを指定してください。
+        default: "Asia/Tokyo"
+        type: string
+    outputs:
+      next_scheduled_date:
+        description: yyyy/mm/dd形式で日付を返します。
+        value: ${{ jobs.get_next_scheduled_date.outputs.next_scheduled_date }}
+
+jobs:
+  get_next_scheduled_date:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: ${{ inputs.time_zone }}
+    steps:
+      - name: Run script
+        id: get_date
+        run: |
+          case "${{ inputs.interval }}" in
+            "daily")
+                next_scheduled_date=$(date -d "tomorrow" +%Y/%m/%d)
+                ;;
+            "weekly")
+                next_scheduled_date=$(date -d "next ${{ inputs.target_day }}" +%Y/%m/%d)
+                ;;
+            *)
+                echo "Invalid INTERVAL value"
+                exit 1
+                ;;
+            esac
+            echo "next_scheduled_date=$next_scheduled_date" >> "$GITHUB_OUTPUT"
+    outputs:
+      next_scheduled_date: ${{ steps.get_date.outputs.next_scheduled_date }}

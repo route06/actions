@@ -12,6 +12,7 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 * [codeql.yml](./.github/workflows/codeql.yml)
 * [create_gh_discussion.yml](./.github/workflows/create_gh_discussion.yml)
 * [get_last_discussion_url.yml](./.github/workflows/get_last_discussion_url.yml)
+* [get_next_scheduled_date.yml](./.github/workflows/get_next_scheduled_date.yml)
 * [gh_discussion_comment_to_slack.yml](./.github/workflows/gh_discussion_comment_to_slack.yml)
 * [notify_slack_on_ci_failed.yml](./.github/workflows/notify_slack_on_ci_failed.yml)
 
