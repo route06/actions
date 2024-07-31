@@ -8,31 +8,19 @@
 #     # 毎週水曜 13:00 JST に実行
 #     - cron: "0 4 * * wed"
 #
-# env:
-#   # NOTE: MTG開催曜日に合わせて変更してください
-#   TARGET_DAY: "wednesday"
-#
 # jobs:
 #   get_next_meeting_date:
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 10
-#     env:
-#       TZ: "Asia/Tokyo"
-#     steps:
-#       - name: Get next meeting date
-#         id: get_date
-#         run: |
-#           target_date=$(date -d "next $TARGET_DAY" +%Y/%m/%d)
-#           echo "target_date=$target_date" >> "$GITHUB_OUTPUT"
-#     outputs:
-#       target_date: ${{ steps.get_date.outputs.target_date }}
+#     uses: route06/actions/.github/workflows/calc_next_date.yml@v2
+#     with:
+#       interval: weekly
+#       target_day: wednesday # NOTE: MTG開催曜日に合わせて変更してください
 # 
 #   create_discussion:
 #     needs: get_next_meeting_date
 #     uses: route06/actions/.github/workflows/create_gh_discussion.yml@v2
 #     with:
 #       # NOTE: 作成するDiscussionのタイトルを指定
-#       title: ${{ needs.get_next_meeting_date.outputs.target_date }} Meeting Title
+#       title: ${{ needs.calc_next_weekly_date.outputs.next_date }} Meeting Title
 #       # NOTE: discussion_category_slugについては補足参照
 #       discussion_category_slug: meeting-notes
 #       # NOTE: 作成するDiscussionで使用するテンプレートファイルのパスを指定
