@@ -18,8 +18,8 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 
 利用可能ですが、最終的なテストやフィードバック待ちのバージョンとなります。  
 
+* [calc_next_date.yml](./.github/workflows/calc_next_date.yml)
 * [create_gh_discussion.yml](./.github/workflows/create_gh_discussion.yml)
-* [get_next_scheduled_date.yml](./.github/workflows/get_next_scheduled_date.yml)
 
 ## 開発者向け
 
