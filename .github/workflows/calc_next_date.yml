@@ -1,26 +1,26 @@
 # @usage
 #
-# name: Get next scheduled date
+# name: Calc next date
 #
 # on:
 #   workflow_dispatch:
 #
 # jobs:
-#   get_next_weekly_scheduled_date:
-#     uses: route06/actions/.github/workflows/get_next_scheduled_date.yml@v2
+#   calc_next_weekly_date:
+#     uses: route06/actions/.github/workflows/calc_next_date.yml@v2
 #     with:
 #       interval: weekly
 #       target_day: wednesday
 #
 #   log_result:
 #     runs-on: ubuntu-latest
-#     needs: [get_next_weekly_scheduled_date]
+#     needs: [calc_next_weekly_date]
 #     steps:
-#       - name: Log the next scheduled date
+#       - name: Log the calculated next date
 #         run: |
-#           echo "The next weekly schedule date is: ${{ needs.get_next_weekly_scheduled_date.outputs.next_scheduled_date }}"
+#           echo "The next weekly date is: ${{ needs.calc_next_weekly_date.outputs.next_date }}"
 
-name: Get next scheduled date
+name: Calc next date
 
 on:
   workflow_call:
@@ -38,32 +38,32 @@ on:
         default: "Asia/Tokyo"
         type: string
     outputs:
-      next_scheduled_date:
+      next_date:
         description: yyyy/mm/dd形式で日付を返します。
-        value: ${{ jobs.get_next_scheduled_date.outputs.next_scheduled_date }}
+        value: ${{ jobs.calc_next_date.outputs.next_date }}
 
 jobs:
-  get_next_scheduled_date:
+  calc_next_date:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
       TZ: ${{ inputs.time_zone }}
     steps:
       - name: Run script
-        id: get_date
+        id: calc_date
         run: |
           case "${{ inputs.interval }}" in
             "daily")
-                next_scheduled_date=$(date -d "tomorrow" +%Y/%m/%d)
+                next_date=$(date -d "tomorrow" +%Y/%m/%d)
                 ;;
             "weekly")
-                next_scheduled_date=$(date -d "next ${{ inputs.target_day }}" +%Y/%m/%d)
+                next_date=$(date -d "next ${{ inputs.target_day }}" +%Y/%m/%d)
                 ;;
             *)
                 echo "Invalid INTERVAL value"
                 exit 1
                 ;;
             esac
-            echo "next_scheduled_date=$next_scheduled_date" >> "$GITHUB_OUTPUT"
+            echo "next_date=$next_date" >> "$GITHUB_OUTPUT"
     outputs:
-      next_scheduled_date: ${{ steps.get_date.outputs.next_scheduled_date }}
+      next_date: ${{ steps.calc_date.outputs.next_date }}
