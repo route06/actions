@@ -87,7 +87,7 @@ jobs:
               return {repositoryId: result.repository.id, categoryId: result.repository.discussionCategory.id};
             }
 
-            async function createMyDiscussion(github, repositoryId, categoryId, title, description) {
+            async function createDiscussion(github, repositoryId, categoryId, title, description) {
               const result = await github.graphql(`mutation($repositoryId:ID!, $categoryId:ID!, $title:String!, $body:String!) {
                 createDiscussion(input: {repositoryId: $repositoryId, categoryId: $categoryId, title: $title, body: $body}) {
                   discussion {
@@ -130,7 +130,7 @@ jobs:
               }
             })();
 
-            const discussionId = await createMyDiscussion(
+            const discussionId = await createDiscussion(
               github,
               repositoryIdAndCategoryId.repositoryId,
               repositoryIdAndCategoryId.categoryId,
