@@ -14,7 +14,7 @@
 #     with:
 #       interval: weekly
 #       target_day: wednesday # NOTE: MTG開催曜日に合わせて変更してください
-# 
+#
 #   create_discussion:
 #     needs: get_next_meeting_date
 #     uses: route06/actions/.github/workflows/create_gh_discussion.yml@v2
@@ -37,7 +37,7 @@ name: Create GitHub discussion
 
 on:
   workflow_call:
-    inputs: 
+    inputs:
       title:
         description: 作成するDiscussionのタイトルを設定してください。
         required: true
@@ -62,7 +62,7 @@ jobs:
       - name: Run script
         env:
           REPOSITORY: ${{ github.repository }}
-          DISCUSSION_CATEGORY_SLUG: ${{ inputs.discussion_category_slug }} 
+          DISCUSSION_CATEGORY_SLUG: ${{ inputs.discussion_category_slug }}
           TITLE: ${{ inputs.title }}
           DESCRIPTION_TEMPLATE_PATH: ${{ inputs.description_template_path }}
         uses: actions/github-script@v7
