@@ -24,7 +24,7 @@ name: Calc next date
 
 on:
   workflow_call:
-    inputs: 
+    inputs:
       interval:
         description: daily, weeklyのいずれかを指定してください。
         type: string
