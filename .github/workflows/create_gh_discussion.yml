@@ -22,7 +22,7 @@
 #       # NOTE: 作成するDiscussionのタイトルを指定
 #       title: ${{ needs.calc_next_weekly_date.outputs.next_date }} Meeting Title
 #       # NOTE: discussion_category_slugについては補足参照
-#       discussion_category_slug: meeting-notes
+#       discussion_category_slug: ideas
 #       # NOTE: 作成するDiscussionで使用するテンプレートファイルのパスを指定
 #       description_template_path: _templates/weekly_meeting_discussion/test.md
 #
