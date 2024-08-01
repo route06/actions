@@ -1,7 +1,7 @@
 # todo: 以下はStarter Workflow化する
 # @usage
 #
-# name: Create discussion
+# name: Create GitHub discussion
 #
 # on:
 #   schedule:
@@ -33,7 +33,7 @@
 # カテゴリ `Show and tell` の slug は `show-and-tell`:
 #   https://github.com/<org>/<repo>/discussions/categories/show-and-tell
 
-name: Create discussion
+name: Create GitHub discussion
 
 on:
   workflow_call:
