@@ -9,17 +9,12 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 <!-- アルファベット順にソートする -->
 
 * [add_assignee_to_pr.yml](./.github/workflows/add_assignee_to_pr.yml)
+* [calc_next_date.yml](./.github/workflows/calc_next_date.yml)
 * [codeql.yml](./.github/workflows/codeql.yml)
+* [create_gh_discussion.yml](./.github/workflows/create_gh_discussion.yml)
 * [get_last_discussion_url.yml](./.github/workflows/get_last_discussion_url.yml)
 * [gh_discussion_comment_to_slack.yml](./.github/workflows/gh_discussion_comment_to_slack.yml)
 * [notify_slack_on_ci_failed.yml](./.github/workflows/notify_slack_on_ci_failed.yml)
-
-### Release Candidate
-
-利用可能ですが、最終的なテストやフィードバック待ちのバージョンとなります。  
-
-* [calc_next_date.yml](./.github/workflows/calc_next_date.yml)
-* [create_gh_discussion.yml](./.github/workflows/create_gh_discussion.yml)
 
 ## 開発者向け
 
