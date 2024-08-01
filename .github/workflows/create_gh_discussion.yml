@@ -1,67 +1,68 @@
+# todo: 以下はStarter Workflow化する
 # @usage
+#
+# name: Create GitHub discussion
 #
 # on:
 #   schedule:
-#     - cron: "0 0 * * mon"
+#     # 毎週水曜 13:00 JST に実行
+#     - cron: "0 4 * * wed"
+#
 # jobs:
-#   create_discussion:
-#     uses: route06/actions/.github/workflows/create_discussion.yml@v2
+#   get_next_meeting_date:
+#     uses: route06/actions/.github/workflows/calc_next_date.yml@v2
 #     with:
-#       target_day: sunday
-#       title: ハドル
-#       discussion_category_slug: meeting-notes
+#       interval: weekly
+#       target_day: wednesday # NOTE: MTG開催曜日に合わせて変更してください
+#
+#   create_discussion:
+#     needs: get_next_meeting_date
+#     uses: route06/actions/.github/workflows/create_gh_discussion.yml@v2
+#     with:
+#       # NOTE: 作成するDiscussionのタイトルを指定
+#       title: ${{ needs.get_next_meeting_date.outputs.next_date }} Meeting Title
+#       # NOTE: category_slugについては補足参照
+#       category_slug: ideas
+#       # NOTE: 作成するDiscussionで使用するテンプレートファイルのパスを指定
 #       description_template_path: _templates/weekly_meeting_discussion/test.md
 #
 # 補足:
-# discussion_category_slug は各カテゴリを選択した時の、URL 末尾の文字列です。以下は例です。
+# category_slug は各カテゴリを選択した時の、URL 末尾の文字列です。以下は例です。
 # カテゴリ `Q&A` の slug は `q-a`:
 #   https://github.com/<org>/<repo>/discussions/categories/q-a
 # カテゴリ `Show and tell` の slug は `show-and-tell`:
 #   https://github.com/<org>/<repo>/discussions/categories/show-and-tell
 
-name: Create discussion
+name: Create GitHub discussion
 
 on:
   workflow_call:
-   inputs: 
-    target_day:
-      description: MTG開催曜日に合わせて変更してください。
-      required: true
-      type: string
-    title:
-      description: 作成するDiscussionのタイトルを設定してください（yyyy/mm/dd が接頭辞として自動付与されます）。
-      required: true
-      type: string
-    discussion_category_slug:
-      description: 作成するDiscussionのカテゴリslugを設定してください。
-      default: general
-      type: string
-    description_template_path:
-      description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください。
-      required: true
-      type: string
+    inputs:
+      title:
+        description: 作成するDiscussionのタイトルを設定してください。
+        required: true
+        type: string
+      category_slug:
+        description: 作成するDiscussionのカテゴリslugを設定してください。
+        default: general
+        type: string
+      description_template_path:
+        description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください。
+        required: true
+        type: string
 
 jobs:
   create_discussion:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      TZ: "Asia/Tokyo"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: "Get next meeting date"
-        id: get_date
-        run: |
-          target_date=$(date -d "next ${{ inputs.target_day }}" +%Y/%m/%d)
-          echo "target_date=$target_date" >> "$GITHUB_OUTPUT"
-
       - name: Run script
         env:
-          TARGET_DATE: ${{ steps.get_date.outputs.target_date }}
           REPOSITORY: ${{ github.repository }}
-          DISCUSSION_CATEGORY_SLUG: ${{ inputs.discussion_category_slug }} 
+          CATEGORY_SLUG: ${{ inputs.category_slug }}
           TITLE: ${{ inputs.title }}
           DESCRIPTION_TEMPLATE_PATH: ${{ inputs.description_template_path }}
         uses: actions/github-script@v7
@@ -69,12 +70,6 @@ jobs:
           script: |
             const fs = require("fs");
 
-            /**
-            * @param {object} github 
-            * @param {string} owner 
-            * @param {string} repositoryName 
-            * @returns
-            */
             async function featchRepoIdAndDiscussionCategoryId(github, owner, repositoryName, discussionCategorySlug) {
               const result = await github.graphql(`query($owner:String!, $repositoryName:String!, $discussionCategorySlug:String!) {
                 repository(owner: $owner, name: $repositoryName) {
@@ -92,7 +87,7 @@ jobs:
               return {repositoryId: result.repository.id, categoryId: result.repository.discussionCategory.id};
             }
 
-            async function createWeeklyReportDiscussion(github, repositoryId, categoryId, title, description) {
+            async function createDiscussion(github, repositoryId, categoryId, title, description) {
               const result = await github.graphql(`mutation($repositoryId:ID!, $categoryId:ID!, $title:String!, $body:String!) {
                 createDiscussion(input: {repositoryId: $repositoryId, categoryId: $categoryId, title: $title, body: $body}) {
                   discussion {
@@ -107,20 +102,35 @@ jobs:
               });
             }
 
-            const { REPOSITORY, DISCUSSION_CATEGORY_SLUG, TARGET_DATE, TITLE, DESCRIPTION_TEMPLATE_PATH } = process.env;
+            const { REPOSITORY, CATEGORY_SLUG, TITLE, DESCRIPTION_TEMPLATE_PATH } = process.env;
             const [owner, repositoryName] = REPOSITORY.split('/');
 
             const repositoryIdAndCategoryId = await featchRepoIdAndDiscussionCategoryId(
               github,
               owner,
               repositoryName,
-              DISCUSSION_CATEGORY_SLUG,
+              CATEGORY_SLUG,
             )
 
-            const discussionTitle = `${TARGET_DATE} ${TITLE}`;
-            const description = fs.readFileSync(DESCRIPTION_TEMPLATE_PATH, "utf8");
+            const discussionTitle = TITLE;
 
-            const discussionId = await createWeeklyReportDiscussion(
+            const description = (() => {
+              const DEFAULT_DESCRIPTION = '<!-- Write description here -->';
+              try {
+                const desc = fs.readFileSync(DESCRIPTION_TEMPLATE_PATH, "utf8");
+                return desc.trim() === '' ? DEFAULT_DESCRIPTION : desc;
+              } catch (error) {
+                if (error.code === 'ENOENT') {
+                  console.error("Error reading description template file:", error);
+                  return DEFAULT_DESCRIPTION;
+                }
+                else {
+                  throw error;
+                }
+              }
+            })();
+
+            const discussionId = await createDiscussion(
               github,
               repositoryIdAndCategoryId.repositoryId,
               repositoryIdAndCategoryId.categoryId,
