@@ -55,8 +55,6 @@ jobs:
   create_discussion:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      TZ: "Asia/Tokyo"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
