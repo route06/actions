@@ -37,19 +37,19 @@ name: Create discussion
 
 on:
   workflow_call:
-   inputs: 
-    title:
-      description: 作成するDiscussionのタイトルを設定してください。
-      required: true
-      type: string
-    discussion_category_slug:
-      description: 作成するDiscussionのカテゴリslugを設定してください。
-      default: general
-      type: string
-    description_template_path:
-      description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください。
-      required: true
-      type: string
+    inputs: 
+      title:
+        description: 作成するDiscussionのタイトルを設定してください。
+        required: true
+        type: string
+      discussion_category_slug:
+        description: 作成するDiscussionのカテゴリslugを設定してください。
+        default: general
+        type: string
+      description_template_path:
+        description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください。
+        required: true
+        type: string
 
 jobs:
   create_discussion:
