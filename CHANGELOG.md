@@ -1,5 +1,24 @@
 # Changelog
 
+## [v2.2.0](https://github.com/route06/actions/compare/v2.1.7...v2.2.0) - 2024-08-01
+### New Features :tada:
+- Discussionを自動生成するReusable Workflowsの作成 by @TomckySan in https://github.com/route06/actions/pull/52
+- スケジュールされた次の日付を取得するワークフローを作成 by @TomckySan in https://github.com/route06/actions/pull/59
+### Maintenance :technologist:
+- build(deps-dev): bump adr from 1.4.5 to 1.4.6 by @dependabot in https://github.com/route06/actions/pull/50
+- maintenance: use github app token by @MH4GF in https://github.com/route06/actions/pull/49
+- build(deps): bump reviewdog/action-actionlint from 1.51.0 to 1.53.0 by @dependabot in https://github.com/route06/actions/pull/54
+- build(deps): bump actions/create-github-app-token from 1.10.2 to 1.10.3 by @dependabot in https://github.com/route06/actions/pull/55
+- build(deps): bump reviewdog/action-actionlint from 1.53.0 to 1.54.0 by @dependabot in https://github.com/route06/actions/pull/58
+- Pin actions/create-github-app-token to major version by @masutaka in https://github.com/route06/actions/pull/56
+### Other Changes
+- workflows/create_discussion.yml で空のテンプレートファイルを許容する by @TomckySan in https://github.com/route06/actions/pull/53
+- Rename create_discussion.yml to create_gh_discussion.yml by @masutaka in https://github.com/route06/actions/pull/57
+- Rename get_next_scheduled_date.yml to calc_next_date.yml by @masutaka in https://github.com/route06/actions/pull/62
+- Bit improve create_gh_discussion.yml by @masutaka in https://github.com/route06/actions/pull/63
+- Improve input name of create_gh_discussion.yml by @masutaka in https://github.com/route06/actions/pull/64
+- ワークフロー get_next_scheduled_date の追加およびcreate_discussionの改善 by @TomckySan in https://github.com/route06/actions/pull/61
+
 ## [v2.1.7](https://github.com/route06/actions/compare/v2.1.6...v2.1.7) - 2024-06-26
 ### Maintenance :technologist:
 - build(deps): bump reviewdog/action-actionlint from 1.48.0 to 1.51.0 by @dependabot in https://github.com/route06/actions/pull/46
