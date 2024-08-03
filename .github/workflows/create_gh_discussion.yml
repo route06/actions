@@ -70,6 +70,7 @@ jobs:
         with:
           script: |
             const fs = require("fs");
+            const core = require('@actions/core');
 
             async function featchRepoIdAndDiscussionCategoryId(github, owner, repositoryName, discussionCategorySlug) {
               const result = await github.graphql(`query($owner:String!, $repositoryName:String!, $discussionCategorySlug:String!) {
