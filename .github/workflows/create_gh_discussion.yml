@@ -60,6 +60,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run script
+        id: create_discussion
         env:
           REPOSITORY: ${{ github.repository }}
           CATEGORY_SLUG: ${{ inputs.category_slug }}
@@ -137,3 +138,7 @@ jobs:
               discussionTitle,
               description,
             );
+
+            core.setOutput("discussion_id", discussionId);
+    outputs:
+      discussion_id: ${{ steps.create_discussion.outputs.discussion_id }}
