@@ -50,6 +50,10 @@ on:
         description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください。
         required: true
         type: string
+    outputs:
+      next_date:
+        description: yyyy/mm/dd形式で日付を返します。
+        value: ${{ jobs.create_discussion.outputs.discussion_id }}
 
 jobs:
   create_discussion:
