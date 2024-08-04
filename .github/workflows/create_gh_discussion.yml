@@ -70,7 +70,6 @@ jobs:
         with:
           script: |
             const fs = require("fs");
-            const core = require('@actions/core');
 
             async function featchRepoIdAndDiscussionCategoryId(github, owner, repositoryName, discussionCategorySlug) {
               const result = await github.graphql(`query($owner:String!, $repositoryName:String!, $discussionCategorySlug:String!) {
@@ -141,5 +140,3 @@ jobs:
             );
 
             core.setOutput("discussion_id", discussionId);
-    outputs:
-      discussion_id: ${{ steps.create_discussion.outputs.discussion_id }}
