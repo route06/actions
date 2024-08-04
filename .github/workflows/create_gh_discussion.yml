@@ -101,6 +101,8 @@ jobs:
                 title: title,
                 body: description
               });
+
+              return result;
             }
 
             const { REPOSITORY, CATEGORY_SLUG, TITLE, DESCRIPTION_TEMPLATE_PATH } = process.env;
