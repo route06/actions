@@ -145,10 +145,6 @@ jobs:
               description,
             );
 
-            console.log('== START ==');
-            console.log(createDiscussionResult.createDiscussion.discussion.id);
-            console.log('== END ==');
-
             core.setOutput("discussion_id", createDiscussionResult.createDiscussion.discussion.id);
     outputs:
       discussion_id: ${{ steps.create_discussion.outputs.discussion_id }}
