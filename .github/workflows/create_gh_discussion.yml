@@ -133,7 +133,7 @@ jobs:
               }
             })();
 
-            const discussionId = await createDiscussion(
+            const createDiscussionResult = await createDiscussion(
               github,
               repositoryIdAndCategoryId.repositoryId,
               repositoryIdAndCategoryId.categoryId,
@@ -142,7 +142,7 @@ jobs:
             );
 
             console.log('== START ==');
-            console.log(discussionId);
+            console.log(createDiscussionResult.createDiscussion.discussion.id);
             console.log('== END ==');
 
-            core.setOutput("discussion_id", discussionId);
+            core.setOutput("discussion_id", createDiscussionResult.createDiscussion.discussion.id);
