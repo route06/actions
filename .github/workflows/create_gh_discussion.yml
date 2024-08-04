@@ -139,4 +139,8 @@ jobs:
               description,
             );
 
+            console.log('== START ==');
+            console.log(discussionId);
+            console.log('== END ==');
+
             core.setOutput("discussion_id", discussionId);
