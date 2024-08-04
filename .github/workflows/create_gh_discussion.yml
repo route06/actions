@@ -147,4 +147,4 @@ jobs:
 
             core.setOutput("discussion_id", createDiscussionResult.createDiscussion.discussion.id);
     outputs:
-      next_date: ${{ steps.create_discussion.outputs.discussion_id }}
+      discussion_id: ${{ steps.create_discussion.outputs.discussion_id }}
