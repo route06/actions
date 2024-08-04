@@ -146,8 +146,5 @@ jobs:
             console.log('== END ==');
 
             core.setOutput("discussion_id", createDiscussionResult.createDiscussion.discussion.id);
-
-      - name: log_result
-        id: log_result
-        run: |
-          echo ${{ steps.create_discussion.outputs.discussion_id }}
+    outputs:
+      next_date: ${{ steps.create_discussion.outputs.discussion_id }}
