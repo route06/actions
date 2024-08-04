@@ -51,8 +51,8 @@ on:
         required: true
         type: string
     outputs:
-      next_date:
-        description: yyyy/mm/dd形式で日付を返します。
+      discussion_id:
+        description: 作成したDiscussionのIDを返します。
         value: ${{ jobs.create_discussion.outputs.discussion_id }}
 
 jobs:
