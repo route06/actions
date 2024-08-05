@@ -50,6 +50,10 @@ on:
         description: 作成するDiscussionの説明文に利用するテンプレートファイルのパスを設定してください。
         required: true
         type: string
+    outputs:
+      discussion_id:
+        description: 作成したDiscussionのIDを返します。
+        value: ${{ jobs.create_discussion.outputs.discussion_id }}
 
 jobs:
   create_discussion:
@@ -60,6 +64,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run script
+        id: create_discussion
         env:
           REPOSITORY: ${{ github.repository }}
           CATEGORY_SLUG: ${{ inputs.category_slug }}
@@ -100,6 +105,8 @@ jobs:
                 title: title,
                 body: description
               });
+
+              return result.createDiscussion.discussion.id;
             }
 
             const { REPOSITORY, CATEGORY_SLUG, TITLE, DESCRIPTION_TEMPLATE_PATH } = process.env;
@@ -137,3 +144,7 @@ jobs:
               discussionTitle,
               description,
             );
+
+            core.setOutput("discussion_id", discussionId);
+    outputs:
+      discussion_id: ${{ steps.create_discussion.outputs.discussion_id }}
