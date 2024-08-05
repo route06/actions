@@ -1,5 +1,12 @@
-# CodeQLを実行するワークフロー
-# .github/workflows/codeql.ymlから呼び出される
+# ## Summary
+#
+# The core workflow of CodeQL which called by .github/workflows/codeql.yml
+
+# ## Usage
+#
+# None.
+
+name: Run CodeQL Core
 
 on:
   workflow_call:
