@@ -137,7 +137,7 @@ jobs:
               }
             })();
 
-            const createDiscussionResult = await createDiscussion(
+            const discussionId = await createDiscussion(
               github,
               repositoryIdAndCategoryId.repositoryId,
               repositoryIdAndCategoryId.categoryId,
@@ -145,6 +145,6 @@ jobs:
               description,
             );
 
-            core.setOutput("discussion_id", createDiscussionResult.createDiscussion.discussion.id);
+            core.setOutput("discussion_id", discussionId);
     outputs:
       discussion_id: ${{ steps.create_discussion.outputs.discussion_id }}
