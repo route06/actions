@@ -1,6 +1,10 @@
-# 指定した "repo" で、タイトル名に "title" が含まれる最新の Discussion URL を返す。
+# ## Summary
 #
-# @usage
+# 指定した "repo" で、タイトル名に "title" が含まれる最新の Discussion URL を返す。
+
+# ## Usage
+#
+# name: Get last GitHub Discussion URL
 #
 # jobs:
 #   get-last-discussion-url:
@@ -16,7 +20,9 @@
 #     runs-on: ubuntu-latest
 #     steps:
 #       - run: echo ${{ needs.get-last-discussion-url.outputs.url }}
-#
+
+name: Get last GitHub Discussion URL
+
 on:
   workflow_call:
     inputs:
