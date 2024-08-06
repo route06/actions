@@ -1,14 +1,18 @@
+# ## Summary
+#
 # 変更されたファイルの拡張子をチェックし、結果に応じた言語のCodeQLワークフローを呼び出す
 
-# 作成の背景：
+# ## Background
+#
 # ROUTE06では元々Code Scanningのデフォルト設定を使用していたが、
 # 運用のなかで以下のような課題が見つかるようになった。
 # ・ドキュメントのみの修正にも関わらず、すべてのプログラミング言語用のジョブが動く
 # ・解析しなくてよいディレクトリ配下の指摘が多数見つかる
 # 前述の課題を解決すべくデフォルト設定を使用せず、自前でワークフローを定義している。
 
-# @usage
-# name: CodeQL
+# ## Usage
+#
+# name: Run CodeQL
 #
 # on:
 #   push:
@@ -23,7 +27,8 @@
 #   codeql:
 #     uses: route06/actions/.github/workflows/codeql.yml@v2
 
-# 使用上の注意：
+# ## Usage note
+#
 # マージキューを活用しているリポジトリでは、
 # ジョブの実行ブランチが下記の命名規則に沿ったブランチになることがある
 # gh-readonly-queue/{base_branch}/pr-{pr_num}-{base_branch_hash}

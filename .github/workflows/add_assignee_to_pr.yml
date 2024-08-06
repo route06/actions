@@ -1,16 +1,25 @@
+# ## Summary
+#
 # PR 作成時に assignee を、PR 作成者に設定する。ただし、以下のケースを除く。
 #   * PR 作成者のユーザータイプが Bot である
 #   * すでに PR 作成時に assignee が設定されている
+
+# ## Usage
 #
-# @usage
+# name: Add assignee to PR
+#
 # on:
 #   pull_request:
 #     types: [opened]
+#
 # jobs:
 #   add-assignee-to-pr:
 #     permissions:
 #       pull-requests: write
 #     uses: route06/actions/.github/workflows/add_assignee_to_pr.yml@v2
+
+name: Add assignee to PR
+
 on:
   workflow_call:
 

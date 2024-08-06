@@ -1,7 +1,10 @@
-# todo: 以下はStarter Workflow化する
-# @usage
+# ## Summary
 #
-# name: Create GitHub discussion
+# Create GitHub Discussion from the given arguments.
+
+# ## Usage
+#
+# name: Create GitHub Discussion
 #
 # on:
 #   schedule:
@@ -25,15 +28,16 @@
 #       category_slug: ideas
 #       # NOTE: 作成するDiscussionで使用するテンプレートファイルのパスを指定
 #       description_template_path: _templates/weekly_meeting_discussion/test.md
+
+# ## Note
 #
-# 補足:
 # category_slug は各カテゴリを選択した時の、URL 末尾の文字列です。以下は例です。
 # カテゴリ `Q&A` の slug は `q-a`:
 #   https://github.com/<org>/<repo>/discussions/categories/q-a
 # カテゴリ `Show and tell` の slug は `show-and-tell`:
 #   https://github.com/<org>/<repo>/discussions/categories/show-and-tell
 
-name: Create GitHub discussion
+name: Create GitHub Discussion
 
 on:
   workflow_call:
