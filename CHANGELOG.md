@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.3.0](https://github.com/route06/actions/compare/v2.2.0...v2.3.0) - 2024-08-15
+### New Features :tada:
+- create_gh_discussion.ymlのoutputsに作成したDiscussionIDを持たせる by @TomckySan in https://github.com/route06/actions/pull/65
+### Maintenance :technologist:
+- 全ての workflow に `name:` を設定しつつ、reusable workflow のドキュメントを改善する by @masutaka in https://github.com/route06/actions/pull/67
+- build(deps): bump Songmu/tagpr from 1.3.0 to 1.4.0 by @dependabot in https://github.com/route06/actions/pull/68
+
 ## [v2.2.0](https://github.com/route06/actions/compare/v2.1.7...v2.2.0) - 2024-08-01
 ### New Features :tada:
 - Discussionを自動生成するReusable Workflowsの作成 by @TomckySan in https://github.com/route06/actions/pull/52
