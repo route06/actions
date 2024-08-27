@@ -3,6 +3,6 @@
     "adr:new": "adr new"
   },
   "devDependencies": {
-    "adr": "^1.4.6"
+    "adr": "^1.5.1"
   }
 }
