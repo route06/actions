@@ -12,7 +12,7 @@
 #     - cron: "0 4 * * wed"
 #
 # jobs:
-#   create_discussion:
+#   create_issue:
 #     uses: route06/actions/.github/workflows/create_gh_issue.yml@v2
 #     permissions:
 #       contents: read
