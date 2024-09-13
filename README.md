@@ -39,5 +39,6 @@ npm run adr:new タイトル
     * 例: https://github.com/route06/actions/pull/21
 1. デフォルトではパッチバージョンが 1 つ上がります
     * メジャーバージョンを上げたい時は `tagpr:major` ラベルを、マイナーバージョンを上げたい時は `tagpr:minor` ラベルを付けて下さい
+    * Release 対象の PR が全部揃った後に、リリースの種類をパッチからマイナー等に変更したい場合は、ラベルを付けてから [My Release](https://github.com/route06/actions/actions/workflows/my_release.yml) ワークフローを実行して下さい。ブランチは main から変えないで下さい
 1. マージすると [Releases](https://github.com/route06/actions/releases) に、新しいバージョンのリリースが作られます
     * 加えて、v2 などのタグが最新の v2.Y.Z を指すように、git tag が書き換えられます
