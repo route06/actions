@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.4.0](https://github.com/route06/actions/compare/v2.3.0...v2.4.0) - 2024-09-13
+### New Features :tada:
+- 指定した GitHub Discussion ID に固定コメントを追加する reusable workflow を作成 by @masutaka in https://github.com/route06/actions/pull/72
+- GitHub Issue を作成する reusable workflow を作成する by @masutaka in https://github.com/route06/actions/pull/73
+### Maintenance :technologist:
+- build(deps-dev): bump adr from 1.4.6 to 1.5.1 by @dependabot in https://github.com/route06/actions/pull/69
+- build(deps-dev): bump adr from 1.5.1 to 1.5.2 by @dependabot in https://github.com/route06/actions/pull/71
+
 ## [v2.3.0](https://github.com/route06/actions/compare/v2.2.0...v2.3.0) - 2024-08-15
 ### New Features :tada:
 - create_gh_discussion.ymlのoutputsに作成したDiscussionIDを持たせる by @TomckySan in https://github.com/route06/actions/pull/65
