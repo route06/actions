@@ -42,44 +42,19 @@ on:
       labels:
         description: "（任意）Issue の Labels; 例: bug, wontfix"
         type: string
-    outputs:
-      number:
-        description: "作成された Issue Number"
-        value: ${{ jobs.create_issue.outputs.number }}
-      url:
-        description: "作成された Issue URL"
-        value: ${{ jobs.create_issue.outputs.url }}
 
 jobs:
   create_issue:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    env:
-      LABELS: "${{ inputs.labels }}"
     steps:
       - uses: actions/checkout@v4
-      - name: Decide template filename
+      - name: Create a issue
         run: |
-          echo "TEMPLATE_WITH_HEADER=template_work$$.md" >> "$GITHUB_ENV"
-      - name: Setup issue template
-        run: |
-          echo ""
-
-          cat <<EOF > ${{ env.TEMPLATE_WITH_HEADER }}
-          ---
-          title: "${{ inputs.title }}"
-          assignees: "${{ inputs.assignees }}"
-          labels: "${{ inputs.labels }}"
-          ---
-
-          $(cat ${{ inputs.description_template_path }})
-          EOF
-      - uses: JasonEtco/create-an-issue@1b14a70e4d8dc185e5cc76d3bec9eab20257b2c5 # v2.9.2
-        id: create_an_issue
+          gh issue create \
+            --title '${{ inputs.title }}' \
+            --body "$(cat ${{ inputs.description_template_path }})" \
+            --assignee '${{ inputs.assignees }}' \
+            --label '${{ inputs.labels }}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          filename: ${{ env.TEMPLATE_WITH_HEADER }}
-    outputs:
-      number: ${{ steps.create_an_issue.outputs.number }}
-      url: ${{ steps.create_an_issue.outputs.url }}
