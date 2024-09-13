@@ -1,0 +1,135 @@
+# ## Summary
+#
+# Add GitHub Discussion Comment from the given arguments.
+
+# ## Usage
+#
+# name: Add GitHub Discussion Comment
+#
+# on:
+#   schedule:
+#     # 毎週水曜 13:00 JST に実行
+#     - cron: "0 4 * * wed"
+#
+# jobs:
+#   get_next_meeting_date:
+#     uses: route06/actions/.github/workflows/calc_next_date.yml@v2
+#     with:
+#       interval: weekly
+#       target_day: wednesday # NOTE: MTG開催曜日に合わせて変更してください
+#
+#   create_discussion:
+#     needs: get_next_meeting_date
+#     uses: route06/actions/.github/workflows/create_gh_discussion.yml@v2
+#     with:
+#       # NOTE: 作成するDiscussionのタイトルを指定
+#       title: ${{ needs.get_next_meeting_date.outputs.next_date }} Meeting Title
+#       # NOTE: category_slugについては補足参照
+#       category_slug: ideas
+#       # NOTE: 作成するDiscussionで使用するテンプレートファイルのパスを指定
+#       description_template_path: _templates/weekly_meeting_discussion/test.md
+#
+#   # 作成した Discussion にコメントを追加する
+#   add_comment:
+#     needs: create_discussion
+#     uses: route06/actions/.github/workflows/add_discussion_comment.yml@v2
+#     permissions:
+#       contents: read
+#       discussions: write
+#     with:
+#       discussion_id: ${{ needs.create_discussion.outputs.discussion_id }}
+#       comment_template_path: _templates/weekly_meeting_discussion/comment1.md
+#
+#   # 追加したコメントに返信する
+#   reply_to_comment:
+#     needs: add_comment
+#     uses: route06/actions/.github/workflows/add_discussion_comment.yml@v2
+#     permissions:
+#       contents: read
+#       discussions: write
+#     with:
+#       discussion_id: ${{ needs.add_comment.outputs.discussion_id }}
+#       comment_template_path: _templates/weekly_meeting_discussion/comment2.md
+#       reply_to_comment_id: ${{ needs.add_comment.outputs.comment_id }}
+
+name: Add GitHub Discussion Comment
+
+on:
+  workflow_call:
+    inputs:
+      discussion_id:
+        description: コメントするDiscussionIDを設定してください。
+        required: true
+        type: string
+      comment_template_path:
+        description: コメントの内容が書かれたテンプレートファイルのパスを設定してください。
+        required: true
+        type: string
+      reply_to_comment_id:
+        description: 返信先のCommentIDを設定してください。
+        type: string
+    outputs:
+      discussion_id:
+        description: コメントしたDiscussionIDを返します。
+        value: ${{ jobs.add_comment.outputs.discussion_id }}
+      comment_id:
+        description: 追加したCommentIDを返します。
+        value: ${{ jobs.add_comment.outputs.comment_id }}
+
+jobs:
+  add_comment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add Comment
+        id: add_comment
+        env:
+          DISCUSSION_ID: ${{ inputs.discussion_id }}
+          COMMENT_TEMPLATE_PATH: ${{ inputs.comment_template_path }}
+          REPLY_TO_COMMENT_ID: ${{ inputs.reply_to_comment_id }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const { DISCUSSION_ID, COMMENT_TEMPLATE_PATH, REPLY_TO_COMMENT_ID } = process.env;
+
+            async function addDisussionComment(github, discussionId, body, replyToId) {
+              const result = await github.graphql(`mutation($body:String!, $discussion_id:ID!, $reply_to_id:ID) {
+                addDiscussionComment(input: {discussionId: $discussion_id, body: $body, replyToId: $reply_to_id}) {
+                  comment {
+                    id
+                  }
+                }
+              }`, {
+                discussion_id: discussionId,
+                body: body,
+                reply_to_id: replyToId === '' ? null : replyToId,
+              });
+
+              return result.addDiscussionComment.comment.id;
+            }
+
+            const comment = (() => {
+              const DEFAULT_COMMENT = '<!-- Write comment here -->';
+              try {
+                const desc = fs.readFileSync(COMMENT_TEMPLATE_PATH, "utf8");
+                return desc.trim() === '' ? DEFAULT_COMMENT : desc;
+              } catch (error) {
+                if (error.code === 'ENOENT') {
+                  console.error("Error reading comment template file:", error);
+                  return DEFAULT_COMMENT;
+                }
+                else {
+                  throw error;
+                }
+              }
+            })();
+
+            const comment_id = await addDisussionComment(github, DISCUSSION_ID, comment, REPLY_TO_COMMENT_ID);
+
+            core.setOutput("discussion_id", DISCUSSION_ID);
+            core.setOutput("comment_id", comment_id);
+    outputs:
+      discussion_id: ${{ steps.add_comment.outputs.discussion_id }}
+      comment_id: ${{ steps.add_comment.outputs.comment_id }}
