@@ -1,0 +1,60 @@
+# ## Summary
+#
+# Create GitHub Issue from the given arguments.
+
+# ## Usage
+#
+# name: Create GitHub Issue
+#
+# on:
+#   schedule:
+#     # 毎週水曜 13:00 JST に実行
+#     - cron: "0 4 * * wed"
+#
+# jobs:
+#   create_issue:
+#     uses: route06/actions/.github/workflows/create_gh_issue.yml@v2
+#     permissions:
+#       contents: read
+#       issues: write
+#     with:
+#       title: Sample Issue
+#       description_template_path: _templates/sample_issue.md
+#       assignees: alice, bob
+#       labels: bug, wontfix
+
+name: Create GitHub Issue
+
+on:
+  workflow_call:
+    inputs:
+      title:
+        description: "作成する Issue のタイトル"
+        required: true
+        type: string
+      description_template_path:
+        description: "Issue の説明に利用するテンプレートファイルのパス"
+        required: true
+        type: string
+      assignees:
+        description: "（任意）Issue の Assignees; 例: alice, bob"
+        type: string
+      labels:
+        description: "（任意）Issue の Labels; 例: bug, wontfix"
+        type: string
+
+jobs:
+  create_issue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create a issue
+        run: |
+          gh issue create \
+            --title '${{ inputs.title }}' \
+            --body "$(cat ${{ inputs.description_template_path }})" \
+            --assignee '${{ inputs.assignees }}' \
+            --label '${{ inputs.labels }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
