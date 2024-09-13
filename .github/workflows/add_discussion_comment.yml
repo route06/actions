@@ -94,10 +94,6 @@ jobs:
             const fs = require("fs");
             const { DISCUSSION_ID, COMMENT_TEMPLATE_PATH, REPLY_TO_COMMENT_ID } = process.env;
 
-            console.log('DISCUSSION_ID: %s', DISCUSSION_ID);
-            console.log('COMMENT_TEMPLATE_PATH: %s', COMMENT_TEMPLATE_PATH);
-            console.log('REPLY_TO_COMMENT_ID: %s', REPLY_TO_COMMENT_ID);
-
             async function addDisussionComment(github, discussionId, body, replyToId) {
               const result = await github.graphql(`mutation($body:String!, $discussion_id:ID!, $reply_to_id:ID) {
                 addDiscussionComment(input: {discussionId: $discussion_id, body: $body, replyToId: $reply_to_id}) {
