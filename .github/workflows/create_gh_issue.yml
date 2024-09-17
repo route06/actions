@@ -20,8 +20,8 @@
 #     with:
 #       title: Sample Issue
 #       description_template_path: _templates/sample_issue.md
-#       assignees: alice, bob
-#       labels: bug, wontfix
+#       assignees: alice,bob
+#       labels: bug,wontfix
 
 name: Create GitHub Issue
 
@@ -37,10 +37,10 @@ on:
         required: true
         type: string
       assignees:
-        description: "（任意）Issue の Assignees; 例: alice, bob"
+        description: "（任意）Issue の Assignees; 例: alice,bob"
         type: string
       labels:
-        description: "（任意）Issue の Labels; 例: bug, wontfix"
+        description: "（任意）Issue の Labels; 例: bug,wontfix"
         type: string
 
 jobs:
