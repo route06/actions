@@ -53,7 +53,7 @@ jobs:
         run: |
           gh issue create \
             --title '${{ inputs.title }}' \
-            --body "$(cat ${{ inputs.description_template_path }})" \
+            --body-file '${{ inputs.description_template_path }}' \
             --assignee '${{ inputs.assignees }}' \
             --label '${{ inputs.labels }}'
         env:
