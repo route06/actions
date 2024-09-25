@@ -50,12 +50,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     outputs:
-      go: ${{ steps.filter.outputs.go }}
-      javascript: ${{ steps.filter.outputs.javascript }}
-      python: ${{ steps.filter.outputs.python }}
-      ruby: ${{ steps.filter.outputs.ruby }}
-      java: ${{ steps.filter.outputs.java }}
-      swift: ${{ steps.filter.outputs.swift }}
+      languages: ${{ steps.formatted_filters.outputs.languages }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -115,45 +110,26 @@ jobs:
               - added|modified: '**/*.plist'
               - added|modified: '**/*.storyboard'
               - added|modified: '**/*.xib'
+      - name: format filters result
+        id: formatted_filters
+        run: |
+          languages="["
+          [[ ${{ steps.filter.outputs.go }} == true ]] && languages+='"go",'
+          [[ ${{ steps.filter.outputs.javascript }} == true ]] && languages+='"javascript",'
+          [[ ${{ steps.filter.outputs.python }} == true ]] && languages+='"python",'
+          [[ ${{ steps.filter.outputs.ruby }} == true ]] && languages+='"ruby",'
+          [[ ${{ steps.filter.outputs.java }} == true ]] && languages+='"java,'
+          [[ ${{ steps.filter.outputs.swift }} == true ]] && languages+='"swift,'
+          languages="${languages%,}]"
+          echo "languages=$languages" >> "$GITHUB_OUTPUT"
 
-  go:
+  languages:
     needs: changes
-    if: ${{ needs.changes.outputs.go == 'true' }}
+    if: ${{ needs.changes.outputs.languages != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ${{ fromJson(needs.changes.outputs.languages) }}
     uses: ./.github/workflows/codeql_core.yml
     with:
-      language: "go"
-
-  javascript:
-    needs: changes
-    if: ${{ needs.changes.outputs.javascript == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "javascript"
-
-  python:
-    needs: changes
-    if: ${{ needs.changes.outputs.python == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "python"
-
-  ruby:
-    needs: changes
-    if: ${{ needs.changes.outputs.ruby == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "ruby"
-
-  java:
-    needs: changes
-    if: ${{ needs.changes.outputs.java == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "java"
-
-  swift:
-    needs: changes
-    if: ${{ needs.changes.outputs.swift == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "swift"
+      language: ${{ matrix.language }}
