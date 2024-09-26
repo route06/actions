@@ -57,8 +57,9 @@ jobs:
 
       # GitHub Actions組み込みのpathsによるフィルタでは、そのymlで実行する複数のjobそれぞれでpathsによる分岐ができない
       # そのため https://github.com/dorny/paths-filter を使い、フィルタのjob → 各jobの順で実行することで複数jobの分岐を実現する
-      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
-        id: filter
+      - name: Determine languages
+        id: determine
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         with:
           # ここで指定したkeyがoutputsに出力される
           #
@@ -116,12 +117,12 @@ jobs:
         with:
           script: |
             const outputs = {
-              go: ${{ steps.filter.outputs.go }},
-              java: ${{ steps.filter.outputs.java }},
-              javascript: ${{ steps.filter.outputs.javascript }},
-              python: ${{ steps.filter.outputs.python }},
-              ruby: ${{ steps.filter.outputs.ruby }},
-              swift: ${{ steps.filter.outputs.swift }},
+              go: ${{ steps.determine.outputs.go }},
+              java: ${{ steps.determine.outputs.java }},
+              javascript: ${{ steps.determine.outputs.javascript }},
+              python: ${{ steps.determine.outputs.python }},
+              ruby: ${{ steps.determine.outputs.ruby }},
+              swift: ${{ steps.determine.outputs.swift }},
             };
 
             const languages = Object.keys(outputs)
