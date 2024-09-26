@@ -10,6 +10,11 @@
 # ・解析しなくてよいディレクトリ配下の指摘が多数見つかる
 # 前述の課題を解決すべくデフォルト設定を使用せず、自前でワークフローを定義している。
 
+# ## Setup
+#
+# リポジトリの Settings > Code security から、GitHub Advanced Security を有効化してください。
+# https://github.com/{owner}/{repo}/settings/security_analysis
+
 # ## Usage
 #
 # name: Run CodeQL
