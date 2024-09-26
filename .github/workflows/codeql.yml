@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     outputs:
-      languages: ${{ steps.formatted_filters.outputs.languages }}
+      languages: ${{ steps.format.outputs.languages }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -110,18 +110,24 @@ jobs:
               - added|modified: '**/*.plist'
               - added|modified: '**/*.storyboard'
               - added|modified: '**/*.xib'
-      - name: format filters result
-        id: formatted_filters
-        run: |
-          languages="["
-          [[ ${{ steps.filter.outputs.go }} == true ]] && languages+='"go",'
-          [[ ${{ steps.filter.outputs.javascript }} == true ]] && languages+='"javascript",'
-          [[ ${{ steps.filter.outputs.python }} == true ]] && languages+='"python",'
-          [[ ${{ steps.filter.outputs.ruby }} == true ]] && languages+='"ruby",'
-          [[ ${{ steps.filter.outputs.java }} == true ]] && languages+='"java,'
-          [[ ${{ steps.filter.outputs.swift }} == true ]] && languages+='"swift,'
-          languages="${languages%,}]"
-          echo "languages=$languages" >> "$GITHUB_OUTPUT"
+      - name: Format filtered languages
+        id: format
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const outputs = {
+              go: ${{ steps.filter.outputs.go }},
+              javascript: ${{ steps.filter.outputs.javascript }},
+              python: ${{ steps.filter.outputs.python }},
+              ruby: ${{ steps.filter.outputs.ruby }},
+              java: ${{ steps.filter.outputs.java }},
+              swift: ${{ steps.filter.outputs.swift }},
+            };
+
+            const languages = Object.keys(outputs)
+              .filter(lang => outputs[lang]);
+
+            core.setOutput('languages', JSON.stringify(languages));
 
   languages:
     needs: changes
