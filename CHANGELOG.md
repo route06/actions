@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.4.1](https://github.com/route06/actions/compare/v2.4.0...v2.4.1) - 2024-09-26
+### Maintenance :technologist:
+- build(deps): bump Songmu/tagpr from 1.4.0 to 1.4.1 by @dependabot in https://github.com/route06/actions/pull/78
+- Add workflow_dispatch to My Release workflow by @masutaka in https://github.com/route06/actions/pull/76
+- build(deps): bump reviewdog/action-actionlint from 1.54.0 to 1.55.0 by @dependabot in https://github.com/route06/actions/pull/81
+- build(deps): bump Songmu/tagpr from 1.4.1 to 1.4.2 by @dependabot in https://github.com/route06/actions/pull/80
+### Other Changes
+- Refactor .github/workflows/create_gh_issue.yml by @masutaka in https://github.com/route06/actions/pull/77
+- Add missing workflow links to README.md by @masutaka in https://github.com/route06/actions/pull/74
+- Fix the usage of create_gh_issue.yml by @masutaka in https://github.com/route06/actions/pull/75
+- Dynamically generate CodeQL jobs by @masutaka in https://github.com/route06/actions/pull/82
+
 ## [v2.4.0](https://github.com/route06/actions/compare/v2.3.0...v2.4.0) - 2024-09-13
 ### New Features :tada:
 - 指定した GitHub Discussion ID に固定コメントを追加する reusable workflow を作成 by @masutaka in https://github.com/route06/actions/pull/72
