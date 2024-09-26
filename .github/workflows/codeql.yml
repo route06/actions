@@ -71,6 +71,10 @@ jobs:
           filters: |
             go:
               - added|modified: '**/*.go'
+            java:
+              - added|modified: '**/*.kt'
+              - added|modified: '**/*.kts'
+              - added|modified: '**/*.ktm'
             javascript:
               - added|modified: '**/*.js'
               - added|modified: '**/*.jsx'
@@ -101,10 +105,6 @@ jobs:
               - added|modified: '**/*.erb'
               - added|modified: '**/*.gemspec'
               - added|modified: '**/Gemfile'
-            java:
-              - added|modified: '**/*.kt'
-              - added|modified: '**/*.kts'
-              - added|modified: '**/*.ktm'
             swift:
               - added|modified: '**/*.swift'
               - added|modified: '**/*.plist'
@@ -117,10 +117,10 @@ jobs:
           script: |
             const outputs = {
               go: ${{ steps.filter.outputs.go }},
+              java: ${{ steps.filter.outputs.java }},
               javascript: ${{ steps.filter.outputs.javascript }},
               python: ${{ steps.filter.outputs.python }},
               ruby: ${{ steps.filter.outputs.ruby }},
-              java: ${{ steps.filter.outputs.java }},
               swift: ${{ steps.filter.outputs.swift }},
             };
 
