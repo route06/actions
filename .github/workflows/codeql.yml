@@ -50,20 +50,16 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     outputs:
-      go: ${{ steps.filter.outputs.go }}
-      javascript: ${{ steps.filter.outputs.javascript }}
-      python: ${{ steps.filter.outputs.python }}
-      ruby: ${{ steps.filter.outputs.ruby }}
-      java: ${{ steps.filter.outputs.java }}
-      swift: ${{ steps.filter.outputs.swift }}
+      languages: ${{ steps.format.outputs.languages }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       # GitHub Actions組み込みのpathsによるフィルタでは、そのymlで実行する複数のjobそれぞれでpathsによる分岐ができない
       # そのため https://github.com/dorny/paths-filter を使い、フィルタのjob → 各jobの順で実行することで複数jobの分岐を実現する
-      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
-        id: filter
+      - name: Determine languages
+        id: determine
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         with:
           # ここで指定したkeyがoutputsに出力される
           #
@@ -76,6 +72,10 @@ jobs:
           filters: |
             go:
               - added|modified: '**/*.go'
+            java:
+              - added|modified: '**/*.kt'
+              - added|modified: '**/*.kts'
+              - added|modified: '**/*.ktm'
             javascript:
               - added|modified: '**/*.js'
               - added|modified: '**/*.jsx'
@@ -106,54 +106,37 @@ jobs:
               - added|modified: '**/*.erb'
               - added|modified: '**/*.gemspec'
               - added|modified: '**/Gemfile'
-            java:
-              - added|modified: '**/*.kt'
-              - added|modified: '**/*.kts'
-              - added|modified: '**/*.ktm'
             swift:
               - added|modified: '**/*.swift'
               - added|modified: '**/*.plist'
               - added|modified: '**/*.storyboard'
               - added|modified: '**/*.xib'
+      - name: Format filtered languages
+        id: format
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const outputs = {
+              go: ${{ steps.determine.outputs.go }},
+              java: ${{ steps.determine.outputs.java }},
+              javascript: ${{ steps.determine.outputs.javascript }},
+              python: ${{ steps.determine.outputs.python }},
+              ruby: ${{ steps.determine.outputs.ruby }},
+              swift: ${{ steps.determine.outputs.swift }},
+            };
 
-  go:
+            const languages = Object.keys(outputs)
+              .filter(lang => outputs[lang]);
+
+            core.setOutput('languages', JSON.stringify(languages));
+
+  languages:
     needs: changes
-    if: ${{ needs.changes.outputs.go == 'true' }}
+    if: ${{ needs.changes.outputs.languages != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ${{ fromJson(needs.changes.outputs.languages) }}
     uses: ./.github/workflows/codeql_core.yml
     with:
-      language: "go"
-
-  javascript:
-    needs: changes
-    if: ${{ needs.changes.outputs.javascript == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "javascript"
-
-  python:
-    needs: changes
-    if: ${{ needs.changes.outputs.python == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "python"
-
-  ruby:
-    needs: changes
-    if: ${{ needs.changes.outputs.ruby == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "ruby"
-
-  java:
-    needs: changes
-    if: ${{ needs.changes.outputs.java == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "java"
-
-  swift:
-    needs: changes
-    if: ${{ needs.changes.outputs.swift == 'true' }}
-    uses: ./.github/workflows/codeql_core.yml
-    with:
-      language: "swift"
+      language: ${{ matrix.language }}
