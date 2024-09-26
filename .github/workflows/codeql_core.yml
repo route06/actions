@@ -17,7 +17,7 @@ on:
 
 jobs:
   analyze:
-    name: Perform CodeQL
+    name: Perform CodeQL for ${{ inputs.language }}
     runs-on: ${{ (inputs.language == 'swift' && 'macos-latest') || 'ubuntu-22.04'  }}
     timeout-minutes: 30
 
