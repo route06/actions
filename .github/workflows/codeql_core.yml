@@ -18,7 +18,7 @@ on:
 jobs:
   analyze:
     name: Perform CodeQL for ${{ inputs.language }}
-    runs-on: ${{ (inputs.language == 'swift' && 'macos-latest') || 'ubuntu-22.04'  }}
+    runs-on: ${{ (inputs.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     timeout-minutes: 30
 
     steps:
