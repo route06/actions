@@ -1,0 +1,32 @@
+# ## Summary
+#
+# Run Dependency Review, which is GitHub Advanced Security a feature
+
+# ## Usage
+#
+# name: Dependency Review
+#
+# on: [pull_request]
+#
+# jobs:
+#   dependency_review:
+#     uses: route06/actions/.github/workflows/dependency_review.yml@v2
+
+# ## Reference
+#
+# https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/configuring-dependency-review
+
+name: Dependency Review
+
+on:
+  workflow_call:
+
+jobs:
+  dependency_review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
