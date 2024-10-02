@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.5.0](https://github.com/route06/actions/compare/v2.4.1...v2.5.0) - 2024-10-02
+### New Features :tada:
+- Introduce Dependency Review workflow by @masutaka in https://github.com/route06/actions/pull/87
+### Maintenance :technologist:
+- build(deps): bump reviewdog/action-actionlint from 1.55.0 to 1.56.0 by @dependabot in https://github.com/route06/actions/pull/85
+- Always use ubuntu-latest by @masutaka in https://github.com/route06/actions/pull/86
+### Other Changes
+- Add Setup to CodeQL workflow doc by @masutaka in https://github.com/route06/actions/pull/83
+
 ## [v2.4.1](https://github.com/route06/actions/compare/v2.4.0...v2.4.1) - 2024-09-26
 ### Maintenance :technologist:
 - build(deps): bump Songmu/tagpr from 1.4.0 to 1.4.1 by @dependabot in https://github.com/route06/actions/pull/78
