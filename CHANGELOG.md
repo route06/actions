@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.5.1](https://github.com/route06/actions/compare/v2.5.0...v2.5.1) - 2024-10-07
+### Maintenance :technologist:
+- build(deps): bump reviewdog/action-actionlint from 1.56.0 to 1.57.0 by @dependabot in https://github.com/route06/actions/pull/89
+- Reduce the frequency of Dependabot update for GitHub Actions by @masutaka in https://github.com/route06/actions/pull/90
+
 ## [v2.5.0](https://github.com/route06/actions/compare/v2.4.1...v2.5.0) - 2024-10-02
 ### New Features :tada:
 - Introduce Dependency Review workflow by @masutaka in https://github.com/route06/actions/pull/87
