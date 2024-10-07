@@ -159,6 +159,6 @@ jobs:
       - name: "Initialize CodeQL (Dummy)"
         uses: github/codeql-action/init@v3
         with:
-          languages: javascript
+          languages: ruby
       - name: "Perform CodeQL Analysis (Dummy)"
         uses: github/codeql-action/analyze@v3
