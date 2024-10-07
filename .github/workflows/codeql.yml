@@ -162,5 +162,3 @@ jobs:
           languages: javascript
       - name: "Perform CodeQL Analysis (Dummy)"
         uses: github/codeql-action/analyze@v3
-        with:
-          skip-queries: true
