@@ -145,3 +145,14 @@ jobs:
     uses: ./.github/workflows/codeql_core.yml
     with:
       language: ${{ matrix.language }}
+
+  no_languages:
+    # Submitting results to satisfy the GitHub ruleset's "Require code scanning results"
+    # even if CodeQL execution is not required.
+    needs: changes
+    if: ${{ needs.changes.outputs.languages == '[]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
