@@ -154,5 +154,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Perform CodeQL Analysis
+      - name: "Initialize CodeQL (Dummy)"
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+      - name: "Perform CodeQL Analysis (Dummy)"
         uses: github/codeql-action/analyze@v3
