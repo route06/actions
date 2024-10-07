@@ -145,16 +145,3 @@ jobs:
     uses: ./.github/workflows/codeql_core.yml
     with:
       language: ${{ matrix.language }}
-
-  pass:
-    if: always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    needs: languages
-    steps:
-      - run: exit 1
-        if: >-
-          ${{
-               contains(needs.*.result, 'failure')
-            || contains(needs.*.result, 'cancelled')
-          }}
