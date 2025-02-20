@@ -8,6 +8,10 @@
 #
 # on: [pull_request]
 #
+# permissions:
+#   contents: read
+#   pull-requests: write
+#
 # jobs:
 #   dependency_review:
 #     uses: route06/actions/.github/workflows/dependency_review.yml@v2
@@ -20,13 +24,19 @@ name: Dependency Review
 
 on:
   workflow_call:
+    inputs:
+      comment-summary-in-pr:
+        description: Determines if the summary is posted as a comment in the PR itself. Setting this to `always` or `on-failure` requires you to give the workflow the write permissions for pull-requests
+        default: on-failure
+        required: false
+        type: string
 
 jobs:
   dependency_review:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/dependency-review-action@v4
+        with:
+          comment-summary-in-pr: ${{ inputs.comment-summary-in-pr }}
