@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.6.0](https://github.com/route06/actions/compare/v2.5.0...v2.6.0) - 2025-02-21
+### New Features :tada:
+- Dependency Review ジョブが失敗したら、PR にコメントする by @masutaka in https://github.com/route06/actions/pull/96
+### Maintenance :technologist:
+- build(deps): bump reviewdog/action-actionlint from 1.56.0 to 1.57.0 by @dependabot in https://github.com/route06/actions/pull/89
+- Reduce the frequency of Dependabot update for GitHub Actions by @masutaka in https://github.com/route06/actions/pull/90
+- build(deps): bump Songmu/tagpr from 1.4.2 to 1.5.0 by @dependabot in https://github.com/route06/actions/pull/92
+- build(deps): bump reviewdog/action-actionlint from 1.57.0 to 1.61.0 by @dependabot in https://github.com/route06/actions/pull/93
+- build(deps): bump reviewdog/action-actionlint from 1.61.0 to 1.64.1 by @dependabot in https://github.com/route06/actions/pull/95
+- build(deps): bump Songmu/tagpr from 1.5.0 to 1.5.1 by @dependabot in https://github.com/route06/actions/pull/94
+
 ## [v2.5.0](https://github.com/route06/actions/compare/v2.4.1...v2.5.0) - 2024-10-02
 ### New Features :tada:
 - Introduce Dependency Review workflow by @masutaka in https://github.com/route06/actions/pull/87
