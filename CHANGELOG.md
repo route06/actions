@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.6.1](https://github.com/route06/actions/compare/v2.6.0...v2.6.1) - 2025-05-01
+### Maintenance :technologist:
+- build(deps): bump reviewdog/action-actionlint from 1.64.1 to 1.65.0 by @dependabot in https://github.com/route06/actions/pull/98
+- build(deps-dev): bump tar-fs from 2.1.1 to 2.1.2 by @dependabot in https://github.com/route06/actions/pull/100
+- build(deps): bump ls-lint/action from 2.2.3 to 2.3.0 by @dependabot in https://github.com/route06/actions/pull/101
+- build(deps): bump reviewdog/action-actionlint from 1.65.0 to 1.65.2 by @dependabot in https://github.com/route06/actions/pull/102
+- build(deps): bump Songmu/tagpr from 1.5.1 to 1.5.2 by @dependabot in https://github.com/route06/actions/pull/103
+- build(deps): bump actions/create-github-app-token from 1 to 2 by @dependabot in https://github.com/route06/actions/pull/104
+
 ## [v2.6.0](https://github.com/route06/actions/compare/v2.5.0...v2.6.0) - 2025-02-21
 ### New Features :tada:
 - Dependency Review ジョブが失敗したら、PR にコメントする by @masutaka in https://github.com/route06/actions/pull/96
