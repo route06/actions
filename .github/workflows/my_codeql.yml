@@ -1,0 +1,22 @@
+name: Run CodeQL
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  checks: read
+  contents: read
+  security-events: write
+
+jobs:
+  codeql:
+    uses: route06/actions/.github/workflows/codeql.yml@v2
