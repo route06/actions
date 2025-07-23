@@ -1,5 +1,19 @@
 # Changelog
 
+## [v2.7.0](https://github.com/route06/actions/compare/v2.6.0...v2.7.0) - 2025-07-23
+### New Features :tada:
+- CodeQL workflow で GitHub Actions に対応する by @masutaka in https://github.com/route06/actions/pull/109
+### Maintenance :technologist:
+- build(deps): bump reviewdog/action-actionlint from 1.64.1 to 1.65.0 by @dependabot[bot] in https://github.com/route06/actions/pull/98
+- build(deps-dev): bump tar-fs from 2.1.1 to 2.1.2 by @dependabot[bot] in https://github.com/route06/actions/pull/100
+- build(deps): bump ls-lint/action from 2.2.3 to 2.3.0 by @dependabot[bot] in https://github.com/route06/actions/pull/101
+- build(deps): bump reviewdog/action-actionlint from 1.65.0 to 1.65.2 by @dependabot[bot] in https://github.com/route06/actions/pull/102
+- build(deps): bump Songmu/tagpr from 1.5.1 to 1.5.2 by @dependabot[bot] in https://github.com/route06/actions/pull/103
+- build(deps): bump actions/create-github-app-token from 1 to 2 by @dependabot[bot] in https://github.com/route06/actions/pull/104
+- build(deps): bump Songmu/tagpr from 1.5.2 to 1.7.0 by @dependabot[bot] in https://github.com/route06/actions/pull/108
+- build(deps): bump ls-lint/action from 2.3.0 to 2.3.1 by @dependabot[bot] in https://github.com/route06/actions/pull/107
+- build(deps-dev): bump tar-fs from 2.1.2 to 2.1.3 by @dependabot[bot] in https://github.com/route06/actions/pull/106
+
 ## [v2.6.0](https://github.com/route06/actions/compare/v2.5.0...v2.6.0) - 2025-02-21
 ### New Features :tada:
 - Dependency Review ジョブが失敗したら、PR にコメントする by @masutaka in https://github.com/route06/actions/pull/96
