@@ -75,6 +75,11 @@ jobs:
           # これはCodeQL内部で解析対象として、これらを同一に扱っていることに由来する
           # https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning?learn=code_security_actions&learnProduct=code-security#changing-the-languages-that-are-analyzed
           filters: |
+            actions:
+              - added|modified: '.github/workflows/*.yml'
+              - added|modified: '.github/workflows/*.yaml'
+              - added|modified: '**/action.yml'
+              - added|modified: '**/action.yaml'
             go:
               - added|modified: '**/*.go'
             java:
@@ -122,6 +127,7 @@ jobs:
         with:
           script: |
             const outputs = {
+              actions: ${{ steps.determine.outputs.actions }},
               go: ${{ steps.determine.outputs.go }},
               java: ${{ steps.determine.outputs.java }},
               javascript: ${{ steps.determine.outputs.javascript }},
