@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.7.1](https://github.com/route06/actions/compare/v2.7.0...v2.7.1) - 2025-09-08
+### Maintenance :technologist:
+- build(deps): bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/route06/actions/pull/110
+- build(deps): bump reviewdog/action-actionlint from 1.65.2 to 1.66.1 by @dependabot[bot] in https://github.com/route06/actions/pull/111
+- build(deps): bump actions/setup-java from 4 to 5 by @dependabot[bot] in https://github.com/route06/actions/pull/112
+
 ## [v2.7.0](https://github.com/route06/actions/compare/v2.6.0...v2.7.0) - 2025-07-23
 ### New Features :tada:
 - CodeQL workflow で GitHub Actions に対応する by @masutaka in https://github.com/route06/actions/pull/109
