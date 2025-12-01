@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # TODO: CodeQL が動作しないため暫定対応
       # 理想は inputs に java-version を持たせ引数にする
