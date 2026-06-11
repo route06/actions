@@ -49,25 +49,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      url: ${{ fromJSON(steps.get_last_discussion.outputs.data).search.nodes[0].url }}
+      url: ${{ steps.get_last_discussion.outputs.url }}
 
     steps:
       - id: get_last_discussion
         name: Get Last discussion
-        uses: octokit/graphql-action@v2.x
-        with:
-          query: |
-            query LastDiscussion {
-              search(
-                type: DISCUSSION,
-                query: "repo:${{ inputs.repo }} in:title: \"${{ inputs.title }}\"",
-                last: 1) {
-                nodes {
-                  ... on Discussion {
-                    url
+        env:
+          GH_TOKEN: ${{ secrets.token }}
+          REPO: ${{ inputs.repo }}
+          TITLE: ${{ inputs.title }}
+        run: |
+          search_query="repo:$REPO in:title: \"$TITLE\""
+          url=$(gh api graphql \
+            -f query='
+              query($searchQuery: String!) {
+                search(type: DISCUSSION, query: $searchQuery, last: 1) {
+                  nodes {
+                    ... on Discussion {
+                      url
+                    }
                   }
                 }
-              }
-            }
-        env:
-          GITHUB_TOKEN: ${{ secrets.token }}
+              }' \
+            -f searchQuery="$search_query" \
+            --jq '.data.search.nodes[0].url // empty')
+          echo "url=$url" >> "$GITHUB_OUTPUT"
