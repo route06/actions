@@ -60,6 +60,7 @@ jobs:
           TITLE: ${{ inputs.title }}
         run: |
           search_query="repo:$REPO in:title: \"$TITLE\""
+          # shellcheck disable=SC2016
           url=$(gh api graphql \
             -f query='
               query($searchQuery: String!) {
