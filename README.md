@@ -29,12 +29,13 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 
 #### ADRの追加方法
 
-リポジトリのルートで以下を実行します。
+`docs/adr/template.md` をコピーして、連番のファイル名で作成します。
 
 ```
-npm install
-npm run adr:new タイトル
+cp docs/adr/template.md docs/adr/006-タイトル.md
 ```
+
+作成後、`docs/adr/README.md` のリストにも追加してください。
 
 ### リリース方法
 
