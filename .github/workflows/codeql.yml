@@ -64,7 +64,7 @@ jobs:
       # そのため https://github.com/dorny/paths-filter を使い、フィルタのjob → 各jobの順で実行することで複数jobの分岐を実現する
       - name: Determine languages
         id: determine
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
         with:
           # ここで指定したkeyがoutputsに出力される
           #
