@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.7.4](https://github.com/route06/actions/compare/v2.7.3...v2.7.4) - 2026-06-18
+
+### Maintenance :technologist:
+- build(deps): bump actions/create-github-app-token from 2 to 3 by @dependabot[bot] in https://github.com/route06/actions/pull/142
+- build(deps): bump Songmu/tagpr from 1.7.0 to 1.20.0 by @dependabot[bot] in https://github.com/route06/actions/pull/129
+- build(deps): bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/route06/actions/pull/123
+- build(deps): bump github/codeql-action from 3 to 4 by @dependabot[bot] in https://github.com/route06/actions/pull/120
+### Other Changes
+- refactor: run actionlint directly without reviewdog by @shige in https://github.com/route06/actions/pull/144
+
 ## [v2.7.3](https://github.com/route06/actions/compare/v2.7.2...v2.7.3) - 2026-06-18
 ### Other Changes
 - chore: remove adr package and npm dependencies by @shige in https://github.com/route06/actions/pull/140
