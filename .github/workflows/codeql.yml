@@ -100,11 +100,7 @@ jobs:
               - added|modified: '**/*.hbs'
               - added|modified: '**/*.ejs'
               - added|modified: '**/*.njk'
-              - added|modified: '**/*.json'
-              - added|modified: '**/*.yaml'
-              - added|modified: '**/*.yml'
               - added|modified: '**/*.raml'
-              - added|modified: '**/*.xml'
               - added|modified: '**/*.ts'
               - added|modified: '**/*.tsx'
               - added|modified: '**/*.mts'
@@ -123,7 +119,7 @@ jobs:
               - added|modified: '**/*.xib'
       - name: Format filtered languages
         id: format
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const outputs = {
