@@ -32,18 +32,6 @@
 #   codeql:
 #     uses: route06/actions/.github/workflows/codeql.yml@v2
 
-# ## Usage note
-#
-# マージキューを活用しているリポジトリでは、
-# ジョブの実行ブランチが下記の命名規則に沿ったブランチになることがある
-# gh-readonly-queue/{base_branch}/pr-{pr_num}-{base_branch_hash}
-# この場合、上述のブランチはリモートには存在しないためdorny/paths-filterが失敗する場合がある
-# その際は下記のようにブランチの除外条件を追加してください
-# on:
-#   push:
-#     branches-ignore:
-#       - gh-readonly-queue/main/pr-*
-
 name: Run CodeQL
 
 on:
@@ -55,91 +43,74 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      languages: ${{ steps.format.outputs.languages }}
+      languages: ${{ steps.determine.outputs.languages }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          fetch-depth: 0
 
       # GitHub Actions組み込みのpathsによるフィルタでは、そのymlで実行する複数のjobそれぞれでpathsによる分岐ができない
-      # そのため https://github.com/dorny/paths-filter を使い、フィルタのjob → 各jobの順で実行することで複数jobの分岐を実現する
+      # そのためgit diffで変更ファイルの拡張子を判定し、対応するCodeQL言語を特定する
       - name: Determine languages
         id: determine
-        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
-        with:
-          # ここで指定したkeyがoutputsに出力される
-          #
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+          MERGE_GROUP_BASE_SHA: ${{ github.event.merge_group.base_sha }}
+        run: |
+          case "$EVENT_NAME" in
+            pull_request) BASE_SHA="$PR_BASE_SHA" ;;
+            push)         BASE_SHA="$PUSH_BEFORE_SHA" ;;
+            merge_group)  BASE_SHA="$MERGE_GROUP_BASE_SHA" ;;
+            *)            BASE_SHA="HEAD~1" ;;
+          esac
+
+          changed_files=$(git diff --name-only --diff-filter=AM "$BASE_SHA" HEAD 2>/dev/null || echo "")
+
+          if [ -z "$changed_files" ]; then
+            echo "languages=[]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          languages="[]"
+
           # 拡張子の一覧は以下を参考にしている
           # https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/#languages-and-compilers
-          #
+
+          if echo "$changed_files" | grep -qE '(^|/)\.github/workflows/.*\.(yml|yaml)$|(^|/)action\.(yml|yaml)$'; then
+            languages=$(echo "$languages" | jq '. + ["actions"]')
+          fi
+
+          if echo "$changed_files" | grep -qE '\.go$'; then
+            languages=$(echo "$languages" | jq '. + ["go"]')
+          fi
+
+          if echo "$changed_files" | grep -qE '\.(kt|kts|ktm)$'; then
+            languages=$(echo "$languages" | jq '. + ["java"]')
+          fi
+
           # JavascriptとTypeScriptの拡張子は意図的に同じキーにまとめている
           # これはCodeQL内部で解析対象として、これらを同一に扱っていることに由来する
           # https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning?learn=code_security_actions&learnProduct=code-security#changing-the-languages-that-are-analyzed
-          filters: |
-            actions:
-              - added|modified: '.github/workflows/*.yml'
-              - added|modified: '.github/workflows/*.yaml'
-              - added|modified: '**/action.yml'
-              - added|modified: '**/action.yaml'
-            go:
-              - added|modified: '**/*.go'
-            java:
-              - added|modified: '**/*.kt'
-              - added|modified: '**/*.kts'
-              - added|modified: '**/*.ktm'
-            javascript:
-              - added|modified: '**/*.js'
-              - added|modified: '**/*.jsx'
-              - added|modified: '**/*.mjs'
-              - added|modified: '**/*.es'
-              - added|modified: '**/*.es6'
-              - added|modified: '**/*.htm'
-              - added|modified: '**/*.html'
-              - added|modified: '**/*.xhtm'
-              - added|modified: '**/*.xhtml'
-              - added|modified: '**/*.vue'
-              - added|modified: '**/*.hbs'
-              - added|modified: '**/*.ejs'
-              - added|modified: '**/*.njk'
-              - added|modified: '**/*.json'
-              - added|modified: '**/*.yaml'
-              - added|modified: '**/*.yml'
-              - added|modified: '**/*.raml'
-              - added|modified: '**/*.xml'
-              - added|modified: '**/*.ts'
-              - added|modified: '**/*.tsx'
-              - added|modified: '**/*.mts'
-              - added|modified: '**/*.cts'
-            python:
-              - added|modified: '**/*.py'
-            ruby:
-              - added|modified: '**/*.rb'
-              - added|modified: '**/*.erb'
-              - added|modified: '**/*.gemspec'
-              - added|modified: '**/Gemfile'
-            swift:
-              - added|modified: '**/*.swift'
-              - added|modified: '**/*.plist'
-              - added|modified: '**/*.storyboard'
-              - added|modified: '**/*.xib'
-      - name: Format filtered languages
-        id: format
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
-        with:
-          script: |
-            const outputs = {
-              actions: ${{ steps.determine.outputs.actions }},
-              go: ${{ steps.determine.outputs.go }},
-              java: ${{ steps.determine.outputs.java }},
-              javascript: ${{ steps.determine.outputs.javascript }},
-              python: ${{ steps.determine.outputs.python }},
-              ruby: ${{ steps.determine.outputs.ruby }},
-              swift: ${{ steps.determine.outputs.swift }},
-            };
+          if echo "$changed_files" | grep -qE '\.(js|jsx|mjs|es|es6|htm|html|xhtm|xhtml|vue|hbs|ejs|njk|json|yaml|yml|raml|xml|ts|tsx|mts|cts)$'; then
+            languages=$(echo "$languages" | jq '. + ["javascript"]')
+          fi
 
-            const languages = Object.keys(outputs)
-              .filter(lang => outputs[lang]);
+          if echo "$changed_files" | grep -qE '\.py$'; then
+            languages=$(echo "$languages" | jq '. + ["python"]')
+          fi
 
-            core.setOutput('languages', JSON.stringify(languages));
+          if echo "$changed_files" | grep -qE '\.(rb|erb|gemspec)$|(^|/)Gemfile$'; then
+            languages=$(echo "$languages" | jq '. + ["ruby"]')
+          fi
+
+          if echo "$changed_files" | grep -qE '\.(swift|plist|storyboard|xib)$'; then
+            languages=$(echo "$languages" | jq '. + ["swift"]')
+          fi
+
+          echo "languages=$languages" >> "$GITHUB_OUTPUT"
 
   languages:
     needs: changes
