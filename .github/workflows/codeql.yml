@@ -60,6 +60,8 @@ jobs:
           PUSH_BEFORE_SHA: ${{ github.event.before }}
           MERGE_GROUP_BASE_SHA: ${{ github.event.merge_group.base_sha }}
         run: |
+          ZERO_SHA="0000000000000000000000000000000000000000"
+
           case "$EVENT_NAME" in
             pull_request) BASE_SHA="$PR_BASE_SHA" ;;
             push)         BASE_SHA="$PUSH_BEFORE_SHA" ;;
@@ -67,7 +69,13 @@ jobs:
             *)            BASE_SHA="HEAD~1" ;;
           esac
 
-          changed_files=$(git diff --name-only --diff-filter=AM "$BASE_SHA" HEAD 2>/dev/null || echo "")
+          # 初回pushやforce pushではBASE_SHAがゼロSHAまたは存在しないコミットになる
+          # その場合は空ツリーとの差分を取り、全ファイルを変更対象として扱う
+          if [ "$BASE_SHA" = "$ZERO_SHA" ] || ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
+            BASE_SHA=$(git hash-object -t tree /dev/null)
+          fi
+
+          changed_files=$(git diff --name-only --diff-filter=AM "$BASE_SHA" HEAD)
 
           if [ -z "$changed_files" ]; then
             echo "languages=[]" >> "$GITHUB_OUTPUT"
@@ -80,34 +88,34 @@ jobs:
           # https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/#languages-and-compilers
 
           if echo "$changed_files" | grep -qE '(^|/)\.github/workflows/.*\.(yml|yaml)$|(^|/)action\.(yml|yaml)$'; then
-            languages=$(echo "$languages" | jq '. + ["actions"]')
+            languages=$(echo "$languages" | jq -c '. + ["actions"]')
           fi
 
           if echo "$changed_files" | grep -qE '\.go$'; then
-            languages=$(echo "$languages" | jq '. + ["go"]')
+            languages=$(echo "$languages" | jq -c '. + ["go"]')
           fi
 
           if echo "$changed_files" | grep -qE '\.(kt|kts|ktm)$'; then
-            languages=$(echo "$languages" | jq '. + ["java"]')
+            languages=$(echo "$languages" | jq -c '. + ["java"]')
           fi
 
           # JavascriptとTypeScriptの拡張子は意図的に同じキーにまとめている
           # これはCodeQL内部で解析対象として、これらを同一に扱っていることに由来する
           # https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning?learn=code_security_actions&learnProduct=code-security#changing-the-languages-that-are-analyzed
           if echo "$changed_files" | grep -qE '\.(js|jsx|mjs|es|es6|htm|html|xhtm|xhtml|vue|hbs|ejs|njk|json|yaml|yml|raml|xml|ts|tsx|mts|cts)$'; then
-            languages=$(echo "$languages" | jq '. + ["javascript"]')
+            languages=$(echo "$languages" | jq -c '. + ["javascript"]')
           fi
 
           if echo "$changed_files" | grep -qE '\.py$'; then
-            languages=$(echo "$languages" | jq '. + ["python"]')
+            languages=$(echo "$languages" | jq -c '. + ["python"]')
           fi
 
           if echo "$changed_files" | grep -qE '\.(rb|erb|gemspec)$|(^|/)Gemfile$'; then
-            languages=$(echo "$languages" | jq '. + ["ruby"]')
+            languages=$(echo "$languages" | jq -c '. + ["ruby"]')
           fi
 
           if echo "$changed_files" | grep -qE '\.(swift|plist|storyboard|xib)$'; then
-            languages=$(echo "$languages" | jq '. + ["swift"]')
+            languages=$(echo "$languages" | jq -c '. + ["swift"]')
           fi
 
           echo "languages=$languages" >> "$GITHUB_OUTPUT"
