@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.7.5](https://github.com/route06/actions/compare/v2.7.4...v2.7.5) - 2026-06-18
+
+### Other Changes
+- pin GitHub Actions to full-length commit SHA by @shige in https://github.com/route06/actions/pull/126
+- security: add top-level permissions to my_test and my_release workflows by @shige in https://github.com/route06/actions/pull/146
+- chore: bump dorny/paths-filter from v3.0.2 to v4.0.1 by @shige in https://github.com/route06/actions/pull/147
+
 ## [v2.7.4](https://github.com/route06/actions/compare/v2.7.3...v2.7.4) - 2026-06-18
 
 ### Maintenance :technologist:
