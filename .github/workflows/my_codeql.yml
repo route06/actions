@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
   pull_request:
+    paths:
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
   merge_group:
 
 concurrency:
@@ -19,4 +25,6 @@ permissions:
 
 jobs:
   codeql:
-    uses: route06/actions/.github/workflows/codeql.yml@v2
+    uses: ./.github/workflows/codeql_core.yml
+    with:
+      language: actions
