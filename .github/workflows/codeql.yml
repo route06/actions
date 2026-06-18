@@ -72,12 +72,17 @@ jobs:
           # 初回pushやforce pushではBASE_SHAがゼロSHAまたは存在しないコミットになる
           # その場合は空ツリーとの差分を取り、全ファイルを変更対象として扱う
           if [ "$BASE_SHA" = "$ZERO_SHA" ]; then
+            echo "::warning::Base SHA is zero (initial push), scanning all files"
             BASE_SHA=$(git hash-object -t tree /dev/null)
           elif ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
-            git fetch --depth=1 origin "$BASE_SHA" 2>/dev/null || BASE_SHA=$(git hash-object -t tree /dev/null)
+            git fetch --depth=1 origin "$BASE_SHA" 2>/dev/null || {
+              echo "::warning::Base SHA unreachable, scanning all files"
+              BASE_SHA=$(git hash-object -t tree /dev/null)
+            }
           fi
 
-          changed_files=$(git diff --name-only --diff-filter=AM "$BASE_SHA" HEAD)
+          # --no-renames: リネームをDelete+Addに分解し、リネーム先がAMフィルタで検出されるようにする
+          changed_files=$(git diff --no-renames --name-only --diff-filter=AM "$BASE_SHA" HEAD)
 
           if [ -z "$changed_files" ]; then
             echo "languages=[]" >> "$GITHUB_OUTPUT"
@@ -89,7 +94,7 @@ jobs:
           # 拡張子の一覧は以下を参考にしている
           # https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/#languages-and-compilers
 
-          if echo "$changed_files" | grep -qE '(^|/)\.github/workflows/.*\.(yml|yaml)$|(^|/)action\.(yml|yaml)$'; then
+          if echo "$changed_files" | grep -qE '(^|/)\.github/workflows/[^/]*\.(yml|yaml)$|(^|/)action\.(yml|yaml)$'; then
             languages=$(echo "$languages" | jq -c '. + ["actions"]')
           fi
 
