@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.7.2](https://github.com/route06/actions/compare/v2.7.1...v2.7.2) - 2026-06-18
+### Other Changes
+- fix: run CodeQL with actions language only for this repo by @shige in https://github.com/route06/actions/pull/134
+- fix: replace deprecated technote-space/assign-author with gh CLI by @shige in https://github.com/route06/actions/pull/132
+- fix: replace deprecated octokit/graphql-action with gh CLI by @shige in https://github.com/route06/actions/pull/138
+- fix: bump actions/github-script from v7 to v9 by @shige in https://github.com/route06/actions/pull/139
+
 ## [v2.7.1](https://github.com/route06/actions/compare/v2.7.0...v2.7.1) - 2026-06-18
 ### Maintenance :technologist:
 - build(deps): bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/route06/actions/pull/110
