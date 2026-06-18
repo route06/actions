@@ -74,7 +74,7 @@ jobs:
           CATEGORY_SLUG: ${{ inputs.category_slug }}
           TITLE: ${{ inputs.title }}
           DESCRIPTION_TEMPLATE_PATH: ${{ inputs.description_template_path }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require("fs");
