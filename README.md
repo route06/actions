@@ -35,6 +35,8 @@ ROUTE06内外から使われることを想定したGitHub ActionsのReusable Wo
 cp docs/adr/template.md docs/adr/006-タイトル.md
 ```
 
+作成後、`docs/adr/README.md` のリストにも追加してください。
+
 ### リリース方法
 
 1. 前回のリリース以降に main ブランチに commit が追加されると、Release PR が作られます
