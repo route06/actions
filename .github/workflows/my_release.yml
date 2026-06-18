@@ -9,6 +9,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}
 
+permissions:
+  contents: read
+
 jobs:
   tagpr:
     # (1) Create a release pull request.
