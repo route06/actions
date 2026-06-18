@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.7.3](https://github.com/route06/actions/compare/v2.7.2...v2.7.3) - 2026-06-18
+### Other Changes
+- chore: remove adr package and npm dependencies by @shige in https://github.com/route06/actions/pull/140
+
 ## [v2.7.2](https://github.com/route06/actions/compare/v2.7.1...v2.7.2) - 2026-06-18
 ### Other Changes
 - fix: run CodeQL with actions language only for this repo by @shige in https://github.com/route06/actions/pull/134
