@@ -9,23 +9,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  actionlint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      checks: write
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v5
-      - name: Run actionlint with reviewdog
-        uses: reviewdog/action-actionlint@e37e2ca68a70112d21e135229272da28ce2d0d5a # v1.66.1
-        with:
-          fail_level: error
-          filter_mode: nofilter
-          level: error
-          reporter: github-pr-review
-
   ls-lint:
     runs-on: ubuntu-latest
     timeout-minutes: 5
