@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.7.6](https://github.com/route06/actions/compare/v2.7.5...v2.7.6) - 2026-07-01
+
+### Maintenance :technologist:
+- build(deps): bump actions/dependency-review-action from 4.9.0 to 5.0.0 by @dependabot[bot] in https://github.com/route06/actions/pull/149
+- build(deps): bump actions/setup-java from 5.3.0 to 5.4.0 by @dependabot[bot] in https://github.com/route06/actions/pull/151
+- build(deps): bump actions/checkout from 6.0.3 to 7.0.0 by @dependabot[bot] in https://github.com/route06/actions/pull/152
+
 ## [v2.7.5](https://github.com/route06/actions/compare/v2.7.4...v2.7.5) - 2026-06-18
 
 ### Other Changes
