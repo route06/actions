@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.7.7](https://github.com/route06/actions/compare/v2.7.6...v2.7.7) - 2026-08-03
+
+### Maintenance :technologist:
+- build(deps): bump Songmu/tagpr from 1.20.0 to 1.20.1 by @dependabot[bot] in https://github.com/route06/actions/pull/153
+- build(deps): bump dorny/paths-filter from 4.0.1 to 4.0.2 by @dependabot[bot] in https://github.com/route06/actions/pull/154
+- build(deps): bump actions/checkout from 7.0.0 to 7.0.1 by @dependabot[bot] in https://github.com/route06/actions/pull/155
+- build(deps): bump github/codeql-action/analyze from 4.36.2 to 4.37.3 by @dependabot[bot] in https://github.com/route06/actions/pull/156
+- build(deps): bump actions/setup-java from 5.4.0 to 5.6.0 by @dependabot[bot] in https://github.com/route06/actions/pull/157
+### Other Changes
+- Fix CodeQL action version mismatch by @shige in https://github.com/route06/actions/pull/159
+
 ## [v2.7.6](https://github.com/route06/actions/compare/v2.7.5...v2.7.6) - 2026-07-01
 
 ### Maintenance :technologist:
