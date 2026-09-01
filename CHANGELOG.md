@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.7.8](https://github.com/route06/actions/compare/v2.7.7...v2.7.8) - 2026-09-01
+
+### Maintenance :technologist:
+- build(deps): bump Songmu/tagpr from 1.20.1 to 1.20.2 by @dependabot[bot] in https://github.com/route06/actions/pull/160
+- build(deps): bump dorny/paths-filter from 4.0.2 to 4.0.3 by @dependabot[bot] in https://github.com/route06/actions/pull/162
+- build(deps): bump actions/setup-java from 5.6.0 to 6.0.0 by @dependabot[bot] in https://github.com/route06/actions/pull/163
+- build(deps): align CodeQL actions to v4.37.8 by @dependabot[bot] in https://github.com/route06/actions/pull/161
+
 ## [v2.7.7](https://github.com/route06/actions/compare/v2.7.6...v2.7.7) - 2026-08-03
 
 ### Maintenance :technologist:
