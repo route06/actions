@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.7.9](https://github.com/route06/actions/compare/v2.7.8...v2.7.9) - 2026-10-01
+
+### Maintenance :technologist:
+- build(deps): bump actions/setup-java from 6.0.0 to 6.0.1 by @dependabot[bot] in https://github.com/route06/actions/pull/167
+- build(deps): bump CodeQL actions to 4.38.2 together by @dependabot[bot] in https://github.com/route06/actions/pull/166
+- build(deps): bump Songmu/tagpr from 1.20.2 to 1.21.0 by @dependabot[bot] in https://github.com/route06/actions/pull/169
+
 ## [v2.7.8](https://github.com/route06/actions/compare/v2.7.7...v2.7.8) - 2026-09-01
 
 ### Maintenance :technologist:
