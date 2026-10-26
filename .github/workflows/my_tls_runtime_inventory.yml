@@ -1,0 +1,108 @@
+name: My TLS Runtime Inventory
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/my_tls_runtime_inventory.yml
+
+permissions: {}
+
+jobs:
+  inventory:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 5
+    steps:
+      # No checkout, repository token, secrets, package installation or external requests.
+      # This collects evidence; a successful run does not mean remediation is complete.
+      - name: Inspect OS and client tools
+        shell: bash
+        run: |
+          date -u '+%Y-%m-%dT%H:%M:%SZ'
+          cat /etc/os-release
+          printf 'ImageOS=%s ImageVersion=%s\n' "$ImageOS" "$ImageVersion"
+          dpkg-query -W ca-certificates openssl libssl3t64 curl git gh
+          curl --version
+          git --version
+          gh --version
+          openssl version -a
+          python3 - <<'PY'
+          import hashlib
+          import os
+          import pathlib
+          import ssl
+          import sys
+          print('Python:', sys.version)
+          print('Python SSL:', ssl.OPENSSL_VERSION)
+          print('Python CA paths:', ssl.get_default_verify_paths())
+          bundle = pathlib.Path('/etc/ssl/certs/ca-certificates.crt')
+          print('System bundle SHA256:', hashlib.sha256(bundle.read_bytes()).hexdigest())
+          context = ssl.create_default_context()
+          matches = [cert['subject'] for cert in context.get_ca_certs()
+                     if any('emsign' in str(value).lower() or 'aaa certificate' in str(value).lower()
+                            for value in cert['subject'])]
+          print('Matching roots in Python default trust store:', matches)
+          for name in ('SSL_CERT_FILE', 'SSL_CERT_DIR', 'CURL_CA_BUNDLE', 'GIT_SSL_CAINFO',
+                       'GIT_SSL_CAPATH', 'NODE_EXTRA_CA_CERTS', 'NODE_OPTIONS',
+                       'NODE_USE_SYSTEM_CA', 'NODE_TLS_REJECT_UNAUTHORIZED'):
+              print(name + ': ' + ('set (value omitted)' if name in os.environ else 'unset'))
+          PY
+          if git config --get-regexp '^http\..*(sslCAInfo|sslCAPath|sslVerify)$' >/dev/null; then
+            echo 'Git TLS overrides found; review before making a completion decision.'
+          fi
+
+      - name: Inspect runner bundled Node separately from PATH Node
+        shell: bash
+        run: |
+          inspect_node() {
+            local executable="$1"
+            printf 'Node executable: %s\n' "$executable"
+            "$executable" - <<'JS'
+          const tls = require('node:tls');
+          const { X509Certificate } = require('node:crypto');
+          console.log('Version:', process.version, 'OpenSSL:', process.versions.openssl);
+          for (const type of ['bundled', 'default', 'system', 'extra']) {
+            if (typeof tls.getCACertificates !== 'function') {
+              console.log('getCACertificates unavailable: further inspection required');
+              break;
+            }
+            const certs = tls.getCACertificates(type);
+            const matches = certs.map(pem => new X509Certificate(pem))
+              .filter(cert => /emsign|aaa certificate/i.test(cert.subject))
+              .map(cert => ({ subject: cert.subject, sha256: cert.fingerprint256 }));
+            console.log(type, 'CA count:', certs.length, 'matching roots:', JSON.stringify(matches));
+          }
+          JS
+          }
+          inspect_node "$(command -v node)"
+          found=0
+          while IFS= read -r executable; do
+            found=1
+            inspect_node "$executable"
+          done < <(python3 - <<'PY'
+          from pathlib import Path
+          # Resolve the running worker instead of assuming an image-specific directory.
+          candidates = set()
+          for process in Path('/proc').iterdir():
+              if not process.name.isdigit():
+                  continue
+              try:
+                  executable = (process / 'exe').resolve(strict=True)
+              except (OSError, RuntimeError):
+                  continue
+              if executable.name == 'Runner.Worker':
+                  node = executable.parent.parent / 'externals/node24/bin/node'
+                  if node.is_file():
+                      candidates.add(str(node))
+          for node in sorted(candidates):
+              print(node)
+          PY
+          )
+          if [ "$found" -eq 0 ]; then
+            echo '::error::Runner bundled Node was not found; runtime inventory is incomplete.'
+            exit 1
+          fi
