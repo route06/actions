@@ -30,9 +30,33 @@ on:
 jobs:
   notify-slack-on-ci-failed:
     runs-on: ubuntu-latest
+    # Use the updated OS store, not the runner's potentially older bundled CA set.
+    env:
+      NODE_OPTIONS: --use-openssl-ca
+      SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+      SSL_CERT_DIR: /etc/ssl/certs
     timeout-minutes: 5
 
     steps:
+      # Inline because checkout in a reusable workflow resolves the caller repository.
+      - name: Update Ubuntu CA trust before authenticated requests
+        shell: bash
+        run: |
+          . /etc/os-release
+          case "$VERSION_ID" in
+            24.04) minimum=20260816ubuntu0.24.04.1 ;;
+            26.04) minimum=20260816ubuntu0.26.04.1 ;;
+            *) echo 'Unsupported Ubuntu release for CA remediation'; exit 1 ;;
+          esac
+          installed=$(dpkg-query -W -f='${Version}' ca-certificates)
+          if ! dpkg --compare-versions "$installed" ge "$minimum"; then
+            sudo apt-get update -o APT::Update::Error-Mode=any
+            sudo apt-get install --only-upgrade --no-install-recommends -y ca-certificates
+          fi
+          installed=$(dpkg-query -W -f='${Version}' ca-certificates)
+          printf 'CA package: %s; required minimum: %s\n' "$installed" "$minimum"
+          dpkg --compare-versions "$installed" ge "$minimum"
+
       - name: Set COMMIT_MESSAGE
         env:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}

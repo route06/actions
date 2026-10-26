@@ -3,10 +3,11 @@ name: My CA Update Test
 on:
   pull_request:
     paths:
-      - .github/workflows/my_ca_update_test.yml
+      - '.github/workflows/*.yml'
   workflow_dispatch:
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   validate:
@@ -27,19 +28,23 @@ jobs:
             printf '%s baseline curl exit: %s\n' "$host" "$status"
           done
 
-      - name: Update the Ubuntu CA package
+      # Inline because checkout in a reusable workflow resolves the caller repository.
+      - name: Update Ubuntu CA trust before authenticated requests
         shell: bash
         run: |
-          sudo apt-get update -o APT::Update::Error-Mode=any
-          sudo apt-get install --only-upgrade --no-install-recommends -y ca-certificates
           . /etc/os-release
           case "$VERSION_ID" in
             24.04) minimum=20260816ubuntu0.24.04.1 ;;
             26.04) minimum=20260816ubuntu0.26.04.1 ;;
-            *) echo 'Unsupported Ubuntu release'; exit 1 ;;
+            *) echo 'Unsupported Ubuntu release for CA remediation'; exit 1 ;;
           esac
           installed=$(dpkg-query -W -f='${Version}' ca-certificates)
-          printf 'Installed CA package: %s; required: %s\n' "$installed" "$minimum"
+          if ! dpkg --compare-versions "$installed" ge "$minimum"; then
+            sudo apt-get update -o APT::Update::Error-Mode=any
+            sudo apt-get install --only-upgrade --no-install-recommends -y ca-certificates
+          fi
+          installed=$(dpkg-query -W -f='${Version}' ca-certificates)
+          printf 'CA package: %s; required minimum: %s\n' "$installed" "$minimum"
           dpkg --compare-versions "$installed" ge "$minimum"
 
       - name: Verify curl rejects both affected chains and accepts GitHub
@@ -53,44 +58,26 @@ jobs:
           done
           curl --fail --silent --show-error --output /dev/null --connect-timeout 10 --max-time 20 https://api.github.com/
 
-      - name: Verify runner Node using the updated OpenSSL trust store
+      - name: Verify JavaScript action uses the updated trust store
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           NODE_OPTIONS: --use-openssl-ca
           SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
           SSL_CERT_DIR: /etc/ssl/certs
-        shell: bash
-        run: |
-          worker_node=$(python3 - <<'PY'
-          from pathlib import Path
-          candidates = set()
-          for process in Path('/proc').iterdir():
-              if not process.name.isdigit():
-                  continue
-              try:
-                  executable = (process / 'exe').resolve(strict=True)
-              except (OSError, RuntimeError):
-                  continue
-              if executable.name == 'Runner.Worker':
-                  candidates.add(str(executable.parent.parent / 'externals/node24/bin/node'))
-          if len(candidates) != 1:
-              raise SystemExit('Expected exactly one active runner Node')
-          print(candidates.pop())
-          PY
-          )
-          "$worker_node" - <<'JS'
-          const https = require('node:https');
-          console.log('Runner Node:', process.version);
-          function connect(host) {
-            return new Promise((resolve, reject) => {
-              const req = https.get({host, path: '/', headers: {'User-Agent': 'tls-ca-validation'}}, res => {
-                res.resume();
-                resolve(res.statusCode);
+        with:
+          script: |
+            const https = require('node:https');
+            console.log('Action Node:', process.version);
+            function connect(host) {
+              return new Promise((resolve, reject) => {
+                const req = https.get({host, path: '/', headers: {'User-Agent': 'tls-ca-validation'}}, res => {
+                  res.resume();
+                  resolve(res.statusCode);
+                });
+                req.setTimeout(20000, () => req.destroy(new Error('Request timed out')));
+                req.on('error', reject);
               });
-              req.setTimeout(20000, () => req.destroy(new Error('Request timed out')));
-              req.on('error', reject);
-            });
-          }
-          (async () => {
+            }
             for (const host of ['dv-g3b-emudhra.we-have-a-problem.com', 'dv-g3b-aaa-emudhra.we-have-a-problem.com']) {
               let rejected = false;
               try {
@@ -104,5 +91,18 @@ jobs:
             }
             const status = await connect('api.github.com');
             if (status !== 200) throw new Error('Unexpected GitHub response: ' + status);
-          })().catch(error => { console.error(error); process.exitCode = 1; });
-          JS
+            await github.rest.repos.get({owner: context.repo.owner, repo: context.repo.repo});
+
+      - name: Verify checkout with the updated trust store
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        env:
+          NODE_OPTIONS: --use-openssl-ca
+          SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+          SSL_CERT_DIR: /etc/ssl/certs
+        with:
+          persist-credentials: false
+
+      - name: Verify GitHub CLI with the updated trust store
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api "repos/$GITHUB_REPOSITORY" --jq .full_name

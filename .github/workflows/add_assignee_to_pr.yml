@@ -27,13 +27,32 @@ jobs:
   add-assignee-to-pr:
     name: Add assignee to PR
     runs-on: ubuntu-latest
-    timeout-minutes: 1
+    timeout-minutes: 5
     permissions:
       pull-requests: write
 
     if: ${{ github.event.pull_request.user.type != 'Bot' && toJSON(github.event.pull_request.assignees) == '[]' }}
 
     steps:
+      # Inline because checkout in a reusable workflow resolves the caller repository.
+      - name: Update Ubuntu CA trust before authenticated requests
+        shell: bash
+        run: |
+          . /etc/os-release
+          case "$VERSION_ID" in
+            24.04) minimum=20260816ubuntu0.24.04.1 ;;
+            26.04) minimum=20260816ubuntu0.26.04.1 ;;
+            *) echo 'Unsupported Ubuntu release for CA remediation'; exit 1 ;;
+          esac
+          installed=$(dpkg-query -W -f='${Version}' ca-certificates)
+          if ! dpkg --compare-versions "$installed" ge "$minimum"; then
+            sudo apt-get update -o APT::Update::Error-Mode=any
+            sudo apt-get install --only-upgrade --no-install-recommends -y ca-certificates
+          fi
+          installed=$(dpkg-query -W -f='${Version}' ca-certificates)
+          printf 'CA package: %s; required minimum: %s\n' "$installed" "$minimum"
+          dpkg --compare-versions "$installed" ge "$minimum"
+
       - name: Add the author as an assignee
         env:
           GH_TOKEN: ${{ github.token }}
