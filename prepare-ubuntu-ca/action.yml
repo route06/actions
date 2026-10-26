@@ -1,0 +1,10 @@
+name: Prepare Ubuntu CA trust
+description: Temporary eMudhra mitigation using the official Ubuntu CA package
+runs:
+  using: composite
+  steps:
+    - name: Update and check Ubuntu CA trust
+      shell: bash
+      env:
+        CA_ACTION_PATH: ${{ github.action_path }}
+      run: bash "$CA_ACTION_PATH/update-ca.sh"
