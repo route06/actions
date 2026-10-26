@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.7.10](https://github.com/route06/actions/compare/v2.7.9...v2.7.10) - 2026-10-26
+
+### Other Changes
+- fix: refresh Ubuntu CA trust in shared API and notification jobs by @shige in https://github.com/route06/actions/pull/173
+
 ## [v2.7.9](https://github.com/route06/actions/compare/v2.7.8...v2.7.9) - 2026-10-01
 
 ### Maintenance :technologist:
