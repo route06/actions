@@ -30,9 +30,17 @@ on:
 jobs:
   notify-slack-on-ci-failed:
     runs-on: ubuntu-latest
+    # Use the updated OS store, not the runner's potentially older bundled CA set.
+    env:
+      NODE_OPTIONS: --use-openssl-ca
+      SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+      SSL_CERT_DIR: /etc/ssl/certs
     timeout-minutes: 5
 
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
+
       - name: Set COMMIT_MESSAGE
         env:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}

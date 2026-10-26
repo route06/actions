@@ -37,6 +37,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
+
       # Note:
       # - 一度変数に入れることで、$や`をエスケープしている
       # - printfしないといい感じに"\n"が変換されない

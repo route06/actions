@@ -27,13 +27,16 @@ jobs:
   add-assignee-to-pr:
     name: Add assignee to PR
     runs-on: ubuntu-latest
-    timeout-minutes: 1
+    timeout-minutes: 5
     permissions:
       pull-requests: write
 
     if: ${{ github.event.pull_request.user.type != 'Bot' && toJSON(github.event.pull_request.assignees) == '[]' }}
 
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
+
       - name: Add the author as an assignee
         env:
           GH_TOKEN: ${{ github.token }}
