@@ -86,24 +86,8 @@ jobs:
       SSL_CERT_DIR: /etc/ssl/certs
     timeout-minutes: 5
     steps:
-      # Inline because checkout in a reusable workflow resolves the caller repository.
-      - name: Update Ubuntu CA trust before authenticated requests
-        shell: bash
-        run: |
-          . /etc/os-release
-          case "$VERSION_ID" in
-            24.04) minimum=20260816ubuntu0.24.04.1 ;;
-            26.04) minimum=20260816ubuntu0.26.04.1 ;;
-            *) echo 'Unsupported Ubuntu release for CA remediation'; exit 1 ;;
-          esac
-          installed=$(dpkg-query -W -f='${Version}' ca-certificates)
-          if ! dpkg --compare-versions "$installed" ge "$minimum"; then
-            sudo apt-get update -o APT::Update::Error-Mode=any
-            sudo apt-get install --only-upgrade --no-install-recommends -y ca-certificates
-          fi
-          installed=$(dpkg-query -W -f='${Version}' ca-certificates)
-          printf 'CA package: %s; required minimum: %s\n' "$installed" "$minimum"
-          dpkg --compare-versions "$installed" ge "$minimum"
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Add Comment
