@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.7.11](https://github.com/route06/actions/compare/v2.7.10...v2.7.11) - 2026-11-02
+
+### Maintenance :technologist:
+- build(deps): bump the codeql-action group with 3 updates by @dependabot[bot] in https://github.com/route06/actions/pull/175
+- build(deps): bump Songmu/tagpr from 1.21.0 to 1.21.4 by @dependabot[bot] in https://github.com/route06/actions/pull/176
+- build(deps): bump actions/create-github-app-token from 3.2.0 to 3.3.0 by @dependabot[bot] in https://github.com/route06/actions/pull/177
+- build(deps): bump actions/setup-java from 6.0.1 to 6.1.0 by @dependabot[bot] in https://github.com/route06/actions/pull/178
+- build(deps): bump ls-lint/action from 2.3.1 to 2.3.2 by @dependabot[bot] in https://github.com/route06/actions/pull/179
+
 ## [v2.7.10](https://github.com/route06/actions/compare/v2.7.9...v2.7.10) - 2026-10-26
 
 ### Other Changes
