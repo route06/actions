@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.7.12](https://github.com/route06/actions/compare/v2.7.11...v2.7.12) - 2026-11-12
+
+### Other Changes
+- Remove the legacy Node.js action from CI failure notifications by @shige in https://github.com/route06/actions/pull/181
+
 ## [v2.7.11](https://github.com/route06/actions/compare/v2.7.10...v2.7.11) - 2026-11-02
 
 ### Maintenance :technologist:
