@@ -41,35 +41,39 @@ jobs:
       - name: Prepare Ubuntu CA trust
         uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
 
-      - name: Set COMMIT_MESSAGE
-        env:
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        run: echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" | tr '\n' ' ' >> "$GITHUB_ENV"
-      - name: Notify to slack
-        uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
+      - name: Notify Slack
         env:
           INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          text: ${{ inputs.title }}
-          attachments: |
-            [
-              {
-                "color": "bad",
-                "author_name": "${{ github.actor }}",
-                "author_icon": "${{ github.event.sender.avatar_url }}",
-                "fields": [
-                  {
-                    "title": "Commit Message",
-                    "value": "${{ env.COMMIT_MESSAGE }}"
-                  },
-                  {
-                    "title": "GitHub Actions URL",
-                    "value": "${{ github.event.repository.url }}/actions/runs/${{ github.run_id }}"
-                  },
-                  {
-                    "title": "Compare URL",
-                    "value": "${{ github.event.compare }}"
-                  }
+          TITLE: ${{ inputs.title }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          AUTHOR_NAME: ${{ github.actor }}
+          AUTHOR_ICON: ${{ github.event.sender.avatar_url }}
+          RUN_URL: ${{ github.event.repository.url }}/actions/runs/${{ github.run_id }}
+          COMPARE_URL: ${{ github.event.compare }}
+        shell: bash
+        run: |
+          commit_message=$(printf '%s' "$COMMIT_MESSAGE" | tr '\n' ' ')
+          payload=$(jq -n \
+            --arg text "$TITLE" \
+            --arg author_name "$AUTHOR_NAME" \
+            --arg author_icon "$AUTHOR_ICON" \
+            --arg commit_message "$commit_message" \
+            --arg run_url "$RUN_URL" \
+            --arg compare_url "$COMPARE_URL" \
+            '{
+              text: $text,
+              attachments: [{
+                color: "bad",
+                author_name: $author_name,
+                author_icon: $author_icon,
+                fields: [
+                  {title: "Commit Message", value: $commit_message},
+                  {title: "GitHub Actions URL", value: $run_url},
+                  {title: "Compare URL", value: $compare_url}
                 ]
-              }
-            ]
+              }]
+            }')
+
+          curl --fail --silent --show-error --output /dev/null \
+            --header 'Content-Type: application/json' \
+            --data-binary "$payload" --url "$INCOMING_WEBHOOK_URL"
